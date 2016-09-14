@@ -31,6 +31,8 @@ public:
 
 	CREATE_FUNC(MainScene);
 
+	//log
+
 };
 
 #endif // !__MAIN_SCENE__

@@ -47,6 +47,7 @@ void MainScene::StartPic()
 
 	EnemyPos = EnemyPic->boundingBox();
 
+	//log
 }
 
 //‰æ‘œˆÚ“®
