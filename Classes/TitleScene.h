@@ -12,6 +12,7 @@ public:
 
 	bool init();
 	void update(float delta);
+	//
 
 };
 #endif // !__TITLE_SCENE_H__

@@ -7,4 +7,5 @@ bool TitleScene::init()
 
 void TitleScene::update(float delta)
 {
+	//log
 }
