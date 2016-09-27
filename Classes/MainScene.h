@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "MultiResolution.h"
+#include "MagicNode.h"
+
 
 USING_NS_CC;
 
@@ -11,6 +13,9 @@ class MainScene :public Scene
 private:
 
 public:
+
+	bool Touch_Flg;
+
 	int MoveDirection;	//êiçsï˚å¸
 	int EnemyHP;
 	int PlayerPOW;
@@ -21,6 +26,8 @@ public:
 	Sprite* PlayerPic;
 	Sprite* EnemyPic;
 
+	MagicNode* _magicNode;
+
 	static cocos2d::Scene* createScene();
 
 	bool init();
@@ -28,6 +35,10 @@ public:
 	void MoveSprite();
 	void PlayerAction(float delta);
 	void PicDes();
+	void Magic_Jin();
+	void Sword_Create();
+
+
 
 	CREATE_FUNC(MainScene);
 

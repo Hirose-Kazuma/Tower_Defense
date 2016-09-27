@@ -1,4 +1,5 @@
 #include "MainScene.h"
+#include "ActionBox.h"
 
 Scene* MainScene::createScene()
 {
@@ -22,8 +23,38 @@ bool MainScene::init()
 	EnemyHP = 3;
 	PlayerPOW = 1;
 
+	Touch_Flg = false;
+
 	StartPic();
 	this->schedule(schedule_selector(MainScene::PlayerAction), 2);
+
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = [this](Touch *touch, Event *event)
+	{
+		if (Touch_Flg == false)
+		{
+			Touch_Flg = true;
+			Magic_Jin();
+		}
+		else if (Touch_Flg == true)
+		{
+			Touch_Flg = false;
+			Sword_Create();
+		}
+
+		return true;
+	};
+	listener->onTouchMoved = [this](Touch *touch, Event *event)
+	{
+		
+		return true;
+	};
+	listener->onTouchEnded = [this](Touch *touch, Event *event)
+	{
+		
+		return true;
+	};
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	return true;
 }
@@ -32,7 +63,7 @@ bool MainScene::init()
 void MainScene::StartPic()
 {
 	//背景色
-	auto bg_color = LayerColor::create(Color4B::WHITE, designResolutionSize.width, designResolutionSize.height);
+	auto bg_color = LayerColor::create(Color4B::GREEN, designResolutionSize.width, designResolutionSize.height);
 	this->addChild(bg_color);
 
 	//Player
@@ -46,7 +77,6 @@ void MainScene::StartPic()
 	addChild(EnemyPic, 0);
 
 	EnemyPos = EnemyPic->boundingBox();
-
 	//log
 }
 
@@ -85,4 +115,40 @@ void MainScene::PicDes()
 	EnemyPic->removeFromParentAndCleanup(true);
 
 	EnemyPos = Rect(0, 0, 0, 0);
+}
+
+void MainScene::Magic_Jin()
+{
+	//魔法陣表示
+	_magicNode = MagicNode::create();
+	_magicNode->setPosition(Vec2(designResolutionSize.width * 0.3, designResolutionSize.height * 0.5));
+	_magicNode->setScale(0.1);
+	addChild(_magicNode);
+
+	//魔法陣アクション
+	_magicNode->runAction(ActionBox::MagicJinAction());
+
+	//杖表示
+	Sprite *Test_Rod = Sprite::create("C_Rod.png");
+	Test_Rod->setScale(0.5);
+	Test_Rod->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	Test_Rod->setPosition(_magicNode->getPosition());
+	Test_Rod->setOpacity(0);
+	addChild(Test_Rod);
+
+
+	//杖アクション
+	Test_Rod->runAction(ActionBox::MagicRodAction());
+
+
+	//
+	Sprite *MagicLight = Sprite::create("DrawNode.png");
+	MagicLight->setColor(Color3B::RED);
+	MagicLight->setPosition(_magicNode->getPosition());
+	MagicLight->setScale(0.5);
+	MagicLight->setOpacity(0);
+	addChild(MagicLight);
+
+	MagicLight->runAction(ActionBox::MagicLightAction());
+
 }
