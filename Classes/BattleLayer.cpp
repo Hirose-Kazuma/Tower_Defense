@@ -7,6 +7,9 @@ bool BattleLayer::init()
 		return false;
 	}
 
+	HouseHP[0] = 3;
+	HouseHP[1] = 3;
+
 
 	//タッチイベント取得
 	auto listener = EventListenerTouchOneByOne::create();
@@ -19,13 +22,28 @@ bool BattleLayer::init()
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 
+	StartSprite();
 
-	EnemyDisplay();
+	//EnemyDisplay();
 
 	//毎フレーム処理
 	this->scheduleUpdate();
 
 	return true;
+}
+
+void BattleLayer::StartSprite()
+{
+	House[0] = Sprite::create("house.png");
+	House[0]->setPosition(Vec2(designResolutionSize.width * 0.1, designResolutionSize.height * 0.6));
+	E_HouseRect = House[0]->getBoundingBox();
+	addChild(House[0]);
+
+	
+	House[1] = Sprite::create("house.png");
+	House[1]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.6));
+	P_HouseRect = House[1]->getBoundingBox();
+	addChild(House[1]);
 }
 
 void BattleLayer::update(float delta)
@@ -61,7 +79,7 @@ void BattleLayer::update(float delta)
 				//攻撃
 				if (Atackflag == false)
 				{
-					Battle(i, n);
+					CharBattle(i, n);
 
 					Atackflag = true;
 
@@ -131,6 +149,41 @@ void BattleLayer::update(float delta)
 			}
 		}
 	}
+
+	//敵拠点のあたり判定
+	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+	{
+		if (_playerlayer[i] == nullptr)break;
+
+		PlayerRect = _playerlayer[i]->getBoundingBox();
+
+		if (PlayerRect.intersectsRect(E_HouseRect))
+		{
+			_playerlayer[i]->stopAllActions();
+		}
+		else
+		{
+
+		}
+	}
+
+	//味方拠点のあたり判定
+	for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+	{
+		if (_enemylayer[i] == nullptr)break;
+
+		EnemyRect = _enemylayer[i]->getBoundingBox();
+
+		if (EnemyRect.intersectsRect(P_HouseRect))
+		{
+			_enemylayer[i]->stopAllActions();
+		}
+		else
+		{
+
+		}
+	}
+	
 }
 
 void BattleLayer::EnemyDisplay()
@@ -180,9 +233,21 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 
 }
 
-void BattleLayer::Battle(int E_Num, int P_Num)
+void BattleLayer::CharBattle(int E_Num, int P_Num)
 {
 	E_HP[E_Num] -= P_AT[P_Num];
+}
+
+void BattleLayer::BaseBattle(int BaseNum, int Num)
+{
+	if (BaseNum == 0)
+	{
+		HouseHP[BaseNum] -= P_AT[Num];
+	}
+	else if(BaseNum == 1)
+	{
+		HouseHP[BaseNum] -= E_AT[Num];
+	}
 }
 
 //タッチ開始
@@ -202,6 +267,7 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 		if (_playerlayer[i]->getBoundingBox().containsPoint(tp))
 		{
 			_playerlayer[i]->stopAllActions();
+			TouchSpriteNum = i;
 			return true;
 		}
 	}
@@ -243,28 +309,22 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 		Direction = 3;
 	}
 
-	//どのSpriteがタッチされたか
-	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
-	{
-		if (_playerlayer[i] == nullptr)break;
-
-		if (_playerlayer[i]->getBoundingBox().containsPoint(tp))
-		{
-			PlayerSwipe(Direction, i);
-		}
-	}
-
-	
-
-
+	PlayerSwipe(Direction, TouchSpriteNum);
 }
 
 
 //Playerスワイプ処理
 void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 {
-	log("DirectionS %d", DirectionS);
 	if (DirectionS == 0)
+	{
+		_playerlayer[Num]->ChangeDirection();
+	}
+	else if (DirectionS == 1)
+	{
+		_playerlayer[Num]->ChangeDirection();
+	}
+	else if (DirectionS == 2)
 	{
 		if (_playerlayer[Num]->getPosition().y < designResolutionSize.height * 0.6)
 		{
@@ -273,16 +333,13 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 			_playerlayer[Num]->runAction(move);
 		}
 	}
-	else if (DirectionS == 1)
-	{
-
-	}
-	else if (DirectionS == 2)
-	{
-
-	}
 	else if (DirectionS == 3)
 	{
-
+		if (_playerlayer[Num]->getPosition().y > designResolutionSize.height * 0.4)
+		{
+			auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
+				_playerlayer[Num]->getPosition().y - designResolutionSize.height * 0.1));
+			_playerlayer[Num]->runAction(move);
+		}
 	}
 }

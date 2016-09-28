@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "MultiResolution.h"
 #include "MagicNode.h"
+#include "BackLayer.h"
+#include "SelectUISwipe.h"
 
 
 USING_NS_CC;
@@ -27,6 +29,8 @@ public:
 	Sprite* EnemyPic;
 
 	MagicNode* _magicNode;
+	BackLayer* _backlayer;
+	SelectUISwipe* _selectuiswipe;
 
 	static cocos2d::Scene* createScene();
 
@@ -36,7 +40,7 @@ public:
 	void PlayerAction(float delta);
 	void PicDes();
 	void Magic_Jin();
-	void Sword_Create();
+	//void Sword_Create();
 
 
 

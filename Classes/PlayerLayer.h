@@ -27,6 +27,7 @@ public:
 	void SetStatus3();
 	void SetStatus4();
 	void SetStatus5();
+	void ChangeDirection();
 	
 
 	CREATE_FUNC(PlayerLayer);
