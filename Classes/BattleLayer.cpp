@@ -53,7 +53,7 @@ void BattleLayer::update(float delta)
 	if (SpawnTimer >= 3.0f)
 	{
 		//EnemyDisplay();
-
+		//
 		SpawnTimer = 0;
 	}
 
