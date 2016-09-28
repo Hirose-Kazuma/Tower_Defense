@@ -33,13 +33,13 @@ void SelectUISwipe::ButtonDisplay()
 	//ƒLƒƒƒ‰ƒ{ƒ^ƒ“
 	for (int i = 0; i < sizeof(Button) / sizeof(Button[0]); i++)
 	{
-		Button[i] = Sprite::create("TestButton.png");
-		Button[i]->setScaleX(0.5);
+		Button[i] = Sprite::create("B_Sword.png");
+		Button[i]->setScaleY(0.7);
 
 		PicSize = Button[i]->getContentSize();
 
-		Button[i]->setPosition(Vec2(designResolutionSize.width * 0.1 + (i * PicSize.width) * 0.5,
-			designResolutionSize.height * 0.1));
+		Button[i]->setPosition(Vec2(designResolutionSize.width * 0.1 + (i * PicSize.width),
+			designResolutionSize.height * 0.18));
 		this->addChild(Button[i], 1);
 	}
 }
@@ -166,7 +166,7 @@ void SelectUISwipe::ButtonTap(int Num)
 {
 	log("Number%d--tap", Num);
 
-	_battlelayer->PlayerDisplay(0, 0.1);
+	_battlelayer->PlayerDisplay(Num, 0.1);
 }
 
 
@@ -175,7 +175,7 @@ void SelectUISwipe::ButtonSwipeUP(int Num)
 {
 	log("Number%d--down", Num);
 
-	_battlelayer->PlayerDisplay(0, 0);
+	_battlelayer->PlayerDisplay(Num, 0);
 }
 
 
@@ -184,5 +184,5 @@ void SelectUISwipe::ButtonSwipeDOUW(int Num)
 {
 	log("Number%d--up", Num);
 
-	_battlelayer->PlayerDisplay(0, 0.2);
+	_battlelayer->PlayerDisplay(Num, 0.2);
 }

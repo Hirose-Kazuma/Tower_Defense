@@ -40,7 +40,8 @@ void PlayerLayer::update(float delta)
 
 void PlayerLayer::SetStatus0()
 {
-	this->initWithFile("Player.png");
+	this->initWithFile("C_Sword.png");
+	this->setScale(0.1);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -96,4 +97,9 @@ void PlayerLayer::SetStatus5()
 	HP = 3;
 	AT = 1;
 	COST = 1;
+}
+
+void PlayerLayer::ChangeDirection()
+{
+	MoveDirection *= -1;
 }

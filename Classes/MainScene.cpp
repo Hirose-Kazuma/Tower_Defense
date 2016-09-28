@@ -39,7 +39,7 @@ bool MainScene::init()
 		else if (Touch_Flg == true)
 		{
 			Touch_Flg = false;
-			Sword_Create();
+			//Sword_Create();
 		}
 
 		return true;
@@ -55,6 +55,14 @@ bool MainScene::init()
 		return true;
 	};
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+
+
+	_backlayer = BackLayer::create();
+	addChild(_backlayer, 0);
+
+	_selectuiswipe = SelectUISwipe::create();
+	addChild(_selectuiswipe, 2);
 
 	return true;
 }
