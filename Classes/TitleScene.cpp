@@ -1,11 +1,14 @@
 #include "TitleScene.h"
 
+USING_NS_CC;
+
 bool TitleScene::init()
 {
-	return false;
+	if (!Scene::init())
+	{
+		return false;
+	}
+
+	return true;
 }
 
-void TitleScene::update(float delta)
-{
-	//log
-}
