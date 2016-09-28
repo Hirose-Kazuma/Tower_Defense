@@ -23,6 +23,8 @@ public:
 
 	float SwipeDirection;
 
+	int ButtonNum;
+
 	bool init();
 	void ButtonDisplay();
 	void ButtonTap(int Num);

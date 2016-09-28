@@ -52,7 +52,7 @@ void BattleLayer::update(float delta)
 
 	if (SpawnTimer >= 3.0f)
 	{
-		EnemyDisplay();
+		//EnemyDisplay();
 
 		SpawnTimer = 0;
 	}
@@ -160,6 +160,7 @@ void BattleLayer::update(float delta)
 		if (PlayerRect.intersectsRect(E_HouseRect))
 		{
 			_playerlayer[i]->stopAllActions();
+			BaseBattle(0, i);
 		}
 		else
 		{
@@ -177,6 +178,7 @@ void BattleLayer::update(float delta)
 		if (EnemyRect.intersectsRect(P_HouseRect))
 		{
 			_enemylayer[i]->stopAllActions();
+			BaseBattle(1, i);
 		}
 		else
 		{
@@ -184,7 +186,6 @@ void BattleLayer::update(float delta)
 		}
 	}
 
-	//拠点
 	
 }
 
@@ -235,20 +236,44 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 
 }
 
+//キャラバトル
 void BattleLayer::CharBattle(int E_Num, int P_Num)
 {
 	E_HP[E_Num] -= P_AT[P_Num];
 }
 
+//拠点攻撃
 void BattleLayer::BaseBattle(int BaseNum, int Num)
 {
 	if (BaseNum == 0)
 	{
 		HouseHP[BaseNum] -= P_AT[Num];
-	}
-	else if(BaseNum == 1)
-	{
-		HouseHP[BaseNum] -= E_AT[Num];
+
+		if (HouseHP[0] <= 0)
+		{
+			if (Winflag == false)
+			{
+				House[0]->removeFromParentAndCleanup(true);
+				Winflag = true;
+			}
+			Director::getInstance()->getActionManager()->removeAllActions();
+			log("Player Win!!");
+		}
+		else if (BaseNum == 1)
+		{
+			HouseHP[BaseNum] -= E_AT[Num];
+
+			if (HouseHP[1] <= 0)
+			{
+				if (Winflag == false)
+				{
+					House[1]->removeFromParentAndCleanup(true);
+					Winflag = true;
+				}
+				Director::getInstance()->getActionManager()->removeAllActions();
+				log("Enemy Win!!");
+			}
+		}
 	}
 }
 
@@ -270,11 +295,12 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 		{
 			_playerlayer[i]->stopAllActions();
 			TouchSpriteNum = i;
-			return true;
+
+			SpriteTouchflag = true;
 		}
 	}
 
-	return false;
+	return true;
 }
 
 
@@ -291,27 +317,40 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 	SwipeDirectionY -= tp.y;
 
 	//右
-	if (SwipeDirectionX <= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
+	if (SpriteTouchflag == true) 
 	{
-		Direction = 0;
+		if (SwipeDirectionX <= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
+		{
+			Direction = 0;
+		}
+		//左
+		else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
+		{
+			Direction = 1;
+		}
+		//上
+		else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+		{
+			Direction = 2;
+		}
+		//下
+		else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+		{
+			Direction = 3;
+		}
+		//エラー回避
+		if (_playerlayer[TouchSpriteNum] != nullptr)
+		{
+			PlayerSwipe(Direction, TouchSpriteNum);
+		}
 	}
-	//左
-	else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
+	else if(SpriteTouchflag == false)
 	{
-		Direction = 1;
-	}
-	//上
-	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-	{
-		Direction = 2;
-	}
-	//下
-	else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-	{
-		Direction = 3;
+		//レイヤーのスワイプ
+		log("layertouch");
 	}
 
-	PlayerSwipe(Direction, TouchSpriteNum);
+	SpriteTouchflag = false;
 }
 
 

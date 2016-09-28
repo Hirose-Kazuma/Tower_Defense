@@ -41,7 +41,7 @@ void PlayerLayer::update(float delta)
 void PlayerLayer::SetStatus0()
 {
 	this->initWithFile("C_Sword.png");
-	this->setScale(0.1);
+	this->setScale(0.2);
 
 	AtackPattern = 1;
 	HP = 3;

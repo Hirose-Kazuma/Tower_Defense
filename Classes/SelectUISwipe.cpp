@@ -19,7 +19,7 @@ bool SelectUISwipe::init()
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	_battlelayer = BattleLayer::create();
-	addChild(_battlelayer, 0);
+	addChild(_battlelayer, -1);
 
 	ButtonDisplay();
 
@@ -52,7 +52,17 @@ bool SelectUISwipe::onTouchBegan(Touch* pTouch, Event* pEvent)
 
 	SwipeDirection = tp.y;
 
-	return true;
+	for (int i = 0; i < sizeof(Button) / sizeof(Button[0]); i++)
+	{
+		if (Button[i]->getBoundingBox().containsPoint(tp))
+		{
+			ButtonNum = i;
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -68,95 +78,17 @@ void SelectUISwipe::onTouchEnded(Touch* pTouch, Event* pEvent)
 
 
 	//キャラボタンタッチ
-	if		(Button[0]->getBoundingBox().containsPoint(tp))
+	if (SwipeDirection >= -50 && 50 >= SwipeDirection)
 	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(0);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(0);
-		}
-		else
-		{
-			ButtonSwipeUP(0);
-		}
+		ButtonTap(ButtonNum);
 	}
-	else if (Button[1]->getBoundingBox().containsPoint(tp))
+	else if (SwipeDirection <= 0)
 	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(1);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(1);
-		}
-		else
-		{
-			ButtonSwipeUP(1);
-		}
+		ButtonSwipeDOUW(ButtonNum);
 	}
-	else if (Button[2]->getBoundingBox().containsPoint(tp))
+	else
 	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(2);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(2);
-		}
-		else
-		{
-			ButtonSwipeUP(2);
-		}
-	}
-	else if (Button[3]->getBoundingBox().containsPoint(tp))
-	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(3);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(3);
-		}
-		else
-		{
-			ButtonSwipeUP(3);
-		}
-	}
-	else if (Button[4]->getBoundingBox().containsPoint(tp))
-	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(4);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(4);
-		}
-		else
-		{
-			ButtonSwipeUP(4);
-		}
-	}
-	else if (Button[5]->getBoundingBox().containsPoint(tp))
-	{
-		if (SwipeDirection >= -50 && 50 >= SwipeDirection)
-		{
-			ButtonTap(5);
-		}
-		else if (SwipeDirection <= 0)
-		{
-			ButtonSwipeDOUW(5);
-		}
-		else
-		{
-			ButtonSwipeUP(5);
-		}
+		ButtonSwipeUP(ButtonNum);
 	}
 }
 

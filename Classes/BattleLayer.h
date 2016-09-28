@@ -23,7 +23,8 @@ public:
 	bool Atackflag;
 	bool E_Desflag[1000];
 	bool P_Desflag[1000];
-	bool test;
+	bool Winflag;
+	bool SpriteTouchflag;
 
 	float AtackTime;
 	float SpawnTimer;
