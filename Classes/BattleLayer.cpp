@@ -183,6 +183,8 @@ void BattleLayer::update(float delta)
 
 		}
 	}
+
+	//‹’“_
 	
 }
 
