@@ -16,7 +16,7 @@ bool PlayerLayer::init()
 		return false;
 	}
 
-	MoveDirection = -1;
+	MoveDirection = 1;
 
 	//–ˆƒtƒŒ[ƒ€ˆ—
 	this->scheduleUpdate();
@@ -46,22 +46,24 @@ void PlayerLayer::SetStatus0()
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
-	COST = 1;
+	COST = 5;
 }
 
 void PlayerLayer::SetStatus1()
 {
-	this->initWithFile("Player.png");
+	this->initWithFile("C_Rod.png");
+	this->setScale(0.2);
 
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
-	COST = 1;
+	COST = 7;
 }
 
 void PlayerLayer::SetStatus2()
 {
 	this->initWithFile("Player.png");
+	this->setFlipX(true);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -72,6 +74,7 @@ void PlayerLayer::SetStatus2()
 void PlayerLayer::SetStatus3()
 {
 	this->initWithFile("Player.png");
+	this->setFlipX(true);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -82,6 +85,7 @@ void PlayerLayer::SetStatus3()
 void PlayerLayer::SetStatus4()
 {
 	this->initWithFile("Player.png");
+	this->setFlipX(true);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -92,6 +96,7 @@ void PlayerLayer::SetStatus4()
 void PlayerLayer::SetStatus5()
 {
 	this->initWithFile("Player.png");
+	this->setFlipX(true);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -102,4 +107,15 @@ void PlayerLayer::SetStatus5()
 void PlayerLayer::ChangeDirection()
 {
 	MoveDirection *= -1;
+
+	if (Flipflag == true)
+	{
+		this->setFlipX(false);
+		Flipflag = false;
+	}
+	else
+	{
+		this->setFlipX(true);
+		Flipflag = true;
+	}
 }

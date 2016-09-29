@@ -9,6 +9,8 @@ bool BattleLayer::init()
 
 	HouseHP[0] = 3;
 	HouseHP[1] = 3;
+	P_TotalCost = 5;
+	E_TotalCost = 5;
 
 
 	//タッチイベント取得
@@ -17,6 +19,7 @@ bool BattleLayer::init()
 	listener->setSwallowTouches(true);
 	// タッチされた瞬間に呼ばれるメソッドを登録
 	listener->onTouchBegan = CC_CALLBACK_2(BattleLayer::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(BattleLayer::onTouchMoved, this);
 	listener->onTouchEnded = CC_CALLBACK_2(BattleLayer::onTouchEnded, this);
 	// イベントの実行の優先順位をノードの重なり順に依存させる
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
@@ -31,29 +34,35 @@ bool BattleLayer::init()
 
 	return true;
 }
-
+//----------------------------------------------------------------
+//initSprite
+//----------------------------------------------------------------
 void BattleLayer::StartSprite()
 {
+	//敵拠点
 	House[0] = Sprite::create("house.png");
-	House[0]->setPosition(Vec2(designResolutionSize.width * 0.1, designResolutionSize.height * 0.6));
+	House[0]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.6));
 	E_HouseRect = House[0]->getBoundingBox();
 	addChild(House[0]);
 
-	
+	//自拠点
 	House[1] = Sprite::create("house.png");
-	House[1]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.6));
+	House[1]->setPosition(Vec2(designResolutionSize.width * 0.1, designResolutionSize.height * 0.6));
 	P_HouseRect = House[1]->getBoundingBox();
 	addChild(House[1]);
 }
 
+//----------------------------------------------------------------
+//毎フレーム処理
+//----------------------------------------------------------------
 void BattleLayer::update(float delta)
 {
 	SpawnTimer += delta;
 
 	if (SpawnTimer >= 3.0f)
 	{
-		//EnemyDisplay();
-		//
+		EnemyDisplay();
+		
 		SpawnTimer = 0;
 	}
 
@@ -68,7 +77,7 @@ void BattleLayer::update(float delta)
 			EnemyRect = _enemylayer[i]->getBoundingBox();
 			PlayerRect = _playerlayer[n]->getBoundingBox();
 
-			//攻撃
+			//当たっているとき
 			if (EnemyRect.intersectsRect(PlayerRect))
 			{
 				_enemylayer[i]->stopAllActions();
@@ -90,8 +99,10 @@ void BattleLayer::update(float delta)
 						_enemylayer[i]->setPosition(0, 0);
 
 						E_Desflag[i] = true;
+						AtackTime = 0;
 					}
 				}
+				//攻撃ディレイ
 				else if (AtackTime >= 3.0)
 				{
 					AtackTime = 0;
@@ -188,11 +199,14 @@ void BattleLayer::update(float delta)
 
 	
 }
-
+//----------------------------------------------------------------
+//Enemy生成
+//----------------------------------------------------------------
 void BattleLayer::EnemyDisplay()
 {
 	_enemylayer[EnemyCount] = EnemyLayer::create();
-	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.2, designResolutionSize.height * 0.5));
+	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * 0.5));
+	_enemylayer[EnemyCount]->SetStatus0();
 
 	/*if (CharNum == 0)_enemylayer[EnemyCount]->SetStatus0();
 	else if (CharNum == 1)_enemylayer[EnemyCount]->SetStatus1();
@@ -201,22 +215,33 @@ void BattleLayer::EnemyDisplay()
 	else if (CharNum == 4)_enemylayer[EnemyCount]->SetStatus4();
 	else if (CharNum == 5)_enemylayer[EnemyCount]->SetStatus5();*/
 
-	addChild(_enemylayer[EnemyCount]);
-	
 	E_PATTERN[EnemyCount] = _enemylayer[EnemyCount]->AtackPattern;
 	E_AT[EnemyCount] = _enemylayer[EnemyCount]->AT;
 	E_HP[EnemyCount] = _enemylayer[EnemyCount]->HP;
 	E_COST[EnemyCount] = _enemylayer[EnemyCount]->COST;
 
-	EnemyCount++;
+	//COST判定
+	if (E_TotalCost >= E_COST[EnemyCount])
+	{
+		addChild(_enemylayer[EnemyCount]);
+
+		E_TotalCost -= E_COST[EnemyCount];
+		EnemyCount++;
+	}
+	else
+	{
+		_enemylayer[EnemyCount] = nullptr;
+	}
 }
 
+//----------------------------------------------------------------
+//Player生成
+//----------------------------------------------------------------
 void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 {
 	//キャラ振り分けはクラスの関数で設定
-
 	_playerlayer[PlayerCount] = PlayerLayer::create();
-	_playerlayer[PlayerCount]->setPosition(Vec2(designResolutionSize.width * 0.7, designResolutionSize.height * (0.4 + Pos)));
+	_playerlayer[PlayerCount]->setPosition(Vec2(designResolutionSize.width * 0.2, designResolutionSize.height * (0.4 + Pos)));
 
 	if (CharNum == 0)_playerlayer[PlayerCount]->SetStatus0();
 	else if(CharNum == 1)_playerlayer[PlayerCount]->SetStatus1();
@@ -225,24 +250,38 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 	else if (CharNum == 4)_playerlayer[PlayerCount]->SetStatus4();
 	else if (CharNum == 5)_playerlayer[PlayerCount]->SetStatus5();
 
-	addChild(_playerlayer[PlayerCount]);
-
+	
 	P_PATTERN[PlayerCount] = _playerlayer[PlayerCount]->AtackPattern;
 	P_AT[PlayerCount] = _playerlayer[PlayerCount]->AT;
 	P_HP[PlayerCount] = _playerlayer[PlayerCount]->HP;
 	P_COST[PlayerCount] = _playerlayer[PlayerCount]->COST;
 
-	PlayerCount++;
+	//COST判定
+	if (P_TotalCost >= P_COST[PlayerCount])
+	{
+		addChild(_playerlayer[PlayerCount]);
+
+		P_TotalCost -= P_COST[PlayerCount];
+		PlayerCount++;
+	}
+	else
+	{
+		_playerlayer[PlayerCount] = nullptr;
+	}
 
 }
 
+//----------------------------------------------------------------
 //キャラバトル
+//----------------------------------------------------------------
 void BattleLayer::CharBattle(int E_Num, int P_Num)
 {
 	E_HP[E_Num] -= P_AT[P_Num];
 }
 
+//----------------------------------------------------------------
 //拠点攻撃
+//----------------------------------------------------------------
 void BattleLayer::BaseBattle(int BaseNum, int Num)
 {
 	if (BaseNum == 0)
@@ -259,25 +298,27 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 			Director::getInstance()->getActionManager()->removeAllActions();
 			log("Player Win!!");
 		}
-		else if (BaseNum == 1)
-		{
-			HouseHP[BaseNum] -= E_AT[Num];
+	}
+	else if (BaseNum == 1)
+	{
+		HouseHP[BaseNum] -= E_AT[Num];
 
-			if (HouseHP[1] <= 0)
+		if (HouseHP[1] <= 0)
+		{
+			if (Winflag == false)
 			{
-				if (Winflag == false)
-				{
-					House[1]->removeFromParentAndCleanup(true);
-					Winflag = true;
-				}
-				Director::getInstance()->getActionManager()->removeAllActions();
-				log("Enemy Win!!");
+				House[1]->removeFromParentAndCleanup(true);
+				Winflag = true;
 			}
+			Director::getInstance()->getActionManager()->removeAllActions();
+			log("Enemy Win!!");
 		}
 	}
 }
 
+//----------------------------------------------------------------
 //タッチ開始
+//----------------------------------------------------------------
 bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
 	//タッチポイント
@@ -296,6 +337,7 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 			_playerlayer[i]->stopAllActions();
 			TouchSpriteNum = i;
 
+			//Spriteがタッチされているか
 			SpriteTouchflag = true;
 		}
 	}
@@ -303,8 +345,24 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 	return true;
 }
 
+//----------------------------------------------------------------
+//タッチ中
+//----------------------------------------------------------------
+void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
+{
+	//Layer移動させるマン
+	Vec2 swipe = pTouch->getDelta();
+	Vec2 layerpos = this->getPosition();
 
+	if (SpriteTouchflag != true)
+	{
+		this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
+	}
+}
+
+//----------------------------------------------------------------
 //タッチ終了
+//----------------------------------------------------------------
 void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
 	//タッチポイント
@@ -317,70 +375,65 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 	SwipeDirectionY -= tp.y;
 
 	//右
-	if (SpriteTouchflag == true) 
+	if (SwipeDirectionX <= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
 	{
-		if (SwipeDirectionX <= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
-		{
-			Direction = 0;
-		}
-		//左
-		else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
-		{
-			Direction = 1;
-		}
-		//上
-		else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-		{
-			Direction = 2;
-		}
-		//下
-		else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-		{
-			Direction = 3;
-		}
-		//エラー回避
-		if (_playerlayer[TouchSpriteNum] != nullptr)
-		{
-			PlayerSwipe(Direction, TouchSpriteNum);
-		}
+		Direction = 0;
 	}
-	else if(SpriteTouchflag == false)
+	//左
+	else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
 	{
-		//レイヤーのスワイプ
-		log("layertouch");
+		Direction = 1;
+	}
+	//上
+	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+	{
+		Direction = 2;
+	}
+	//下
+	else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+	{
+		Direction = 3;
+	}
+	//エラー回避
+	if (_playerlayer[TouchSpriteNum] != nullptr)
+	{
+		PlayerSwipe(Direction, TouchSpriteNum);
+	}
+}
+
+//----------------------------------------------------------------
+//Playerスワイプ処理
+//----------------------------------------------------------------
+void BattleLayer::PlayerSwipe(int DirectionS, int Num)
+{
+	if (SpriteTouchflag == true) {
+		if (DirectionS == 0)
+		{
+			_playerlayer[Num]->ChangeDirection();
+		}
+		else if (DirectionS == 1)
+		{
+			_playerlayer[Num]->ChangeDirection();
+		}
+		else if (DirectionS == 2)
+		{
+			if (_playerlayer[Num]->getPosition().y < designResolutionSize.height * 0.6)
+			{
+				auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
+					_playerlayer[Num]->getPosition().y + designResolutionSize.height * 0.1));
+				_playerlayer[Num]->runAction(move);
+			}
+		}
+		else if (DirectionS == 3)
+		{
+			if (_playerlayer[Num]->getPosition().y > designResolutionSize.height * 0.4)
+			{
+				auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
+					_playerlayer[Num]->getPosition().y - designResolutionSize.height * 0.1));
+				_playerlayer[Num]->runAction(move);
+			}
+		}
 	}
 
 	SpriteTouchflag = false;
-}
-
-
-//Playerスワイプ処理
-void BattleLayer::PlayerSwipe(int DirectionS, int Num)
-{
-	if (DirectionS == 0)
-	{
-		_playerlayer[Num]->ChangeDirection();
-	}
-	else if (DirectionS == 1)
-	{
-		_playerlayer[Num]->ChangeDirection();
-	}
-	else if (DirectionS == 2)
-	{
-		if (_playerlayer[Num]->getPosition().y < designResolutionSize.height * 0.6)
-		{
-			auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
-				_playerlayer[Num]->getPosition().y + designResolutionSize.height * 0.1));
-			_playerlayer[Num]->runAction(move);
-		}
-	}
-	else if (DirectionS == 3)
-	{
-		if (_playerlayer[Num]->getPosition().y > designResolutionSize.height * 0.4)
-		{
-			auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
-				_playerlayer[Num]->getPosition().y - designResolutionSize.height * 0.1));
-			_playerlayer[Num]->runAction(move);
-		}
-	}
 }
