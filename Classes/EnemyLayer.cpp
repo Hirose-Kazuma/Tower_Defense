@@ -25,9 +25,9 @@ void EnemyLayer::update(float delta)
 
 	Animation(AnimationPattern);
 
-	if (Timer >= 1.0f) 
+	if (Timer >= (1.0f * GameSpeed)) 
 	{
-		auto move1 = MoveBy::create(1, Vec2(MoveDirection * 64, 0));	//Œ»ÝˆÊ’u‚©‚çˆÚ“®
+		auto move1 = MoveBy::create((1 * GameSpeed), Vec2(MoveDirection * 64, 0));	//Œ»ÝˆÊ’u‚©‚çˆÚ“®
 
 		this->runAction(move1);
 
@@ -132,14 +132,19 @@ void EnemyLayer::Animation(int SpriteType)
 	{
 		countFlg++;
 
-		if (countFlg == 10)
+		if (countFlg == (10 * GameSpeed))
 		{
 			this->setTexture("Crow_2.png");
 		}
-		else if (countFlg == 20)
+		else if (countFlg == (20 * GameSpeed))
 		{
 			this->setTexture("Crow_1.png");
 			countFlg = 0;
 		}
 	}
+}
+
+void EnemyLayer::ChangeSpeed(float delta)
+{
+	GameSpeed = delta;
 }

@@ -19,42 +19,42 @@ bool MainScene::init()
 		return false;
 	}
 
-	MoveDirection = -1;	//¶•ûŒü
-	EnemyHP = 3;
-	PlayerPOW = 1;
+	//MoveDirection = -1;	//¶•ûŒü
+	//EnemyHP = 3;
+	//PlayerPOW = 1;
 
-	Touch_Flg = false;
+	//Touch_Flg = false;
 
-	StartPic();
-	this->schedule(schedule_selector(MainScene::PlayerAction), 2);
+	//StartPic();
+	//this->schedule(schedule_selector(MainScene::PlayerAction), 2);
 
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = [this](Touch *touch, Event *event)
-	{
-		if (Touch_Flg == false)
-		{
-			Touch_Flg = true;
-			Magic_Jin();
-		}
-		else if (Touch_Flg == true)
-		{
-			Touch_Flg = false;
-			//Sword_Create();
-		}
+	//auto listener = EventListenerTouchOneByOne::create();
+	//listener->onTouchBegan = [this](Touch *touch, Event *event)
+	//{
+	//	if (Touch_Flg == false)
+	//	{
+	//		Touch_Flg = true;
+	//		Magic_Jin();
+	//	}
+	//	else if (Touch_Flg == true)
+	//	{
+	//		Touch_Flg = false;
+	//		//Sword_Create();
+	//	}
 
-		return true;
-	};
-	listener->onTouchMoved = [this](Touch *touch, Event *event)
-	{
-		
-		return true;
-	};
-	listener->onTouchEnded = [this](Touch *touch, Event *event)
-	{
-		
-		return true;
-	};
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+	//	return true;
+	//};
+	//listener->onTouchMoved = [this](Touch *touch, Event *event)
+	//{
+	//	
+	//	return true;
+	//};
+	//listener->onTouchEnded = [this](Touch *touch, Event *event)
+	//{
+	//	
+	//	return true;
+	//};
+	//Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 
 
@@ -103,8 +103,6 @@ void MainScene::PlayerAction(float delta)
 
 	if (PlayerPos.intersectsRect(EnemyPos))
 	{
-		log("Atack!!");
-
 		EnemyHP -= PlayerPOW;
 
 		if (EnemyHP <= 0) PicDes();

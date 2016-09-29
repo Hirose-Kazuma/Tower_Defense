@@ -5,6 +5,8 @@
 #include "MultiResolution.h"
 #include "EnemyLayer.h"
 #include "PlayerLayer.h"
+#include "MagicNode.h"
+#include "ActionBox.h"
 
 USING_NS_CC;
 
@@ -18,7 +20,8 @@ private:
 
 public:
 	EnemyLayer* _enemylayer[1000];
-	PlayerLayer* _playerlayer[1000];
+	PlayerLayer* _playerlayer[1000]; 
+	MagicNode* _magicNode;
 
 	bool Displayflag;
 	bool P_Atackflag;
@@ -26,10 +29,13 @@ public:
 	bool Winflag;
 	bool SpriteTouchflag;
 
-	float AtackTime;
+	float P_AtackTime;
+	float E_AtackTime;
 	float SpawnTimer;
 	float SwipeDirectionX;
 	float SwipeDirectionY;
+	float GameSpeed;
+	float PointRepairX;
 
 	int P_TotalCost;
 	int P_PulasCost;
@@ -66,6 +72,7 @@ public:
 	void CharBattle(int AttackDir, int E_Num, int P_Num);
 	void BaseBattle(int BaseNum, int Num);
 	void PlayerSwipe(int DirectionS ,int Num);
+	void Magic_Jin();
 	CREATE_FUNC(BattleLayer);
 };
 

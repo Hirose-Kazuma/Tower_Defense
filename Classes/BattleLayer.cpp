@@ -7,9 +7,11 @@ bool BattleLayer::init()
 		return false;
 	}
 
+	GameSpeed = 1.0f;//等倍
+	//GameSpeed = 0.5f;//倍速
 	HouseHP[0] = 3;
 	HouseHP[1] = 3;
-	P_TotalCost = 5;
+	P_TotalCost = 105;
 	E_TotalCost = 5;
 
 
@@ -27,7 +29,6 @@ bool BattleLayer::init()
 
 	StartSprite();
 
-	//EnemyDisplay();
 
 	//毎フレーム処理
 	this->scheduleUpdate();
@@ -64,7 +65,7 @@ void BattleLayer::update(float delta)
 {
 	SpawnTimer += delta;
 
-	if (SpawnTimer >= 3.0f)
+	if (SpawnTimer >= (3.0f * GameSpeed))
 	{
 		EnemyDisplay();
 
@@ -88,7 +89,8 @@ void BattleLayer::update(float delta)
 				_enemylayer[i]->stopAllActions();
 				_playerlayer[n]->stopAllActions();
 
-				AtackTime += delta;
+				P_AtackTime += delta;
+				E_AtackTime += delta;
 
 				//Player攻撃
 				if (P_Atackflag == false)
@@ -98,9 +100,9 @@ void BattleLayer::update(float delta)
 					P_Atackflag = true;
 				}
 				//Player攻撃ディレイ
-				else if (AtackTime >= 3.0)
+				else if (P_AtackTime >= (3.0 * GameSpeed))
 				{
-					AtackTime = 0;
+					P_AtackTime = 0;
 					P_Atackflag = false;
 				}
 
@@ -113,9 +115,9 @@ void BattleLayer::update(float delta)
 					E_Atackflag = true;
 				}
 				//Player攻撃ディレイ
-				else if (AtackTime >= 3.0)
+				else if (E_AtackTime >= (3.0 * GameSpeed))
 				{
-					AtackTime = 0;
+					E_AtackTime = 0;
 					E_Atackflag = false;
 				}
 			}
@@ -207,7 +209,7 @@ void BattleLayer::update(float delta)
 		}
 	}
 
-
+	
 }
 
 
@@ -220,6 +222,7 @@ void BattleLayer::EnemyDisplay()
 	_enemylayer[EnemyCount] = EnemyLayer::create();
 	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * 0.5));
 	_enemylayer[EnemyCount]->SetStatus0();
+	_enemylayer[EnemyCount]->ChangeSpeed(GameSpeed);
 
 	/*if (CharNum == 0)_enemylayer[EnemyCount]->SetStatus0();
 	else if (CharNum == 1)_enemylayer[EnemyCount]->SetStatus1();
@@ -257,15 +260,16 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 	//キャラ振り分けはクラスの関数で設定
 	_playerlayer[PlayerCount] = PlayerLayer::create();
 	_playerlayer[PlayerCount]->setPosition(Vec2(designResolutionSize.width * 0.2, designResolutionSize.height * (0.4 + Pos)));
+	_playerlayer[PlayerCount]->ChangeSpeed(GameSpeed);
 
 	if (CharNum == 0)_playerlayer[PlayerCount]->SetStatus0();
-	else if (CharNum == 1)_playerlayer[PlayerCount]->SetStatus1();
+	else if(CharNum == 1)_playerlayer[PlayerCount]->SetStatus1();
 	else if (CharNum == 2)_playerlayer[PlayerCount]->SetStatus2();
 	else if (CharNum == 3)_playerlayer[PlayerCount]->SetStatus3();
 	else if (CharNum == 4)_playerlayer[PlayerCount]->SetStatus4();
 	else if (CharNum == 5)_playerlayer[PlayerCount]->SetStatus5();
 
-
+	
 	P_PATTERN[PlayerCount] = _playerlayer[PlayerCount]->AtackPattern;
 	P_AT[PlayerCount] = _playerlayer[PlayerCount]->AT;
 	P_HP[PlayerCount] = _playerlayer[PlayerCount]->HP;
@@ -293,7 +297,7 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 //----------------------------------------------------------------
 void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 {
-	if (AttackDir == 0)
+	if (AttackDir == 0) 
 	{
 		E_HP[E_Num] -= P_AT[P_Num];
 
@@ -303,7 +307,7 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_enemylayer[E_Num]->setVisible(false);
 			_enemylayer[E_Num]->setPosition(0, 0);
 
-			AtackTime = 0;
+			P_AtackTime = 0;
 		}
 	}
 	else if (AttackDir == 1)
@@ -316,7 +320,7 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_playerlayer[P_Num]->setVisible(false);
 			_playerlayer[P_Num]->setPosition(0, 0);
 
-			AtackTime = 0;
+			E_AtackTime = 0;
 		}
 	}
 }
@@ -367,11 +371,14 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 //----------------------------------------------------------------
 bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	//タッチポイント
+	//タッチポイント 見えてる範囲でとってる
 	Vec2 tp = pTouch->getLocation();
 
 	SwipeDirectionX = tp.x;
 	SwipeDirectionY = tp.y;
+
+	tp.x -= PointRepairX;
+		
 
 	//このレイヤー内のオブジェクトがタッチされているか
 	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
@@ -400,6 +407,9 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 {
 	//Layer移動させるマン
 	Vec2 swipe = pTouch->getDelta();
+	PointRepairX += swipe.x;
+	log("%f", PointRepairX);
+
 	Vec2 layerpos = this->getPosition();
 
 	if (SpriteTouchflag != true)
@@ -488,4 +498,44 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 	}
 
 	SpriteTouchflag = false;
+}
+
+
+//----------------------------------------------------------------
+//魔法陣
+//----------------------------------------------------------------
+void BattleLayer::Magic_Jin()
+{
+	//魔法陣表示
+	_magicNode = MagicNode::create();
+	//_magicNode->setPosition(Vec2(designResolutionSize.width * 0.3, designResolutionSize.height * 0.5));
+	_magicNode->setScale(0.05);
+	addChild(_magicNode);
+
+	//魔法陣アクション
+	_magicNode->runAction(ActionBox::MagicJinAction());
+
+	//杖表示
+	Sprite *Test_Rod = Sprite::create("C_Rod.png");
+	Test_Rod->setScale(0.5);
+	Test_Rod->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	Test_Rod->setPosition(_magicNode->getPosition());
+	Test_Rod->setOpacity(0);
+	addChild(Test_Rod);
+
+
+	//杖アクション
+	Test_Rod->runAction(ActionBox::MagicRodAction());
+
+
+	//
+	Sprite *MagicLight = Sprite::create("DrawNode.png");
+	MagicLight->setColor(Color3B::RED);
+	MagicLight->setPosition(_magicNode->getPosition());
+	MagicLight->setScale(0.25);
+	MagicLight->setOpacity(0);
+	addChild(MagicLight);
+
+	MagicLight->runAction(ActionBox::MagicLightAction());
+
 }

@@ -28,9 +28,9 @@ void PlayerLayer::update(float delta)
 {
 	Timer += delta;
 
-	if (Timer >= 1.0f)
+	if (Timer >= (1.0f * GameSpeed))
 	{
-		auto move1 = MoveBy::create(1, Vec2(MoveDirection * 64, 0));	//Œ»ÝˆÊ’u‚©‚çˆÚ“®
+		auto move1 = MoveBy::create((1 * GameSpeed), Vec2(MoveDirection * 64, 0));	//Œ»ÝˆÊ’u‚©‚çˆÚ“®
 
 		this->runAction(move1);
 
@@ -106,16 +106,21 @@ void PlayerLayer::SetStatus5()
 
 void PlayerLayer::ChangeDirection()
 {
-	MoveDirection *= -1;
-
 	if (Flipflag == true)
 	{
 		this->setFlipX(false);
 		Flipflag = false;
+		MoveDirection *= -1;
 	}
 	else
 	{
 		this->setFlipX(true);
 		Flipflag = true;
+		MoveDirection *= -1;
 	}
+}
+
+void PlayerLayer::ChangeSpeed(float delta)
+{
+	GameSpeed = delta;
 }

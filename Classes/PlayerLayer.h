@@ -12,6 +12,7 @@ public:
 	Sprite* PlayerPic;
 
 	float Timer;
+	float GameSpeed;
 	bool Flipflag;
 	int MoveDirection;
 
@@ -29,6 +30,7 @@ public:
 	void SetStatus4();
 	void SetStatus5();
 	void ChangeDirection();
+	void ChangeSpeed(float delta);
 	
 
 	CREATE_FUNC(PlayerLayer);
