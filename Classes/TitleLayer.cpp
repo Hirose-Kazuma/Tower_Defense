@@ -28,49 +28,46 @@ bool TitleLayer::init()
 	addChild(TitleLabel_c);
 	addChild(TitleLabel_h);
 
+
 	Vector<Sprite*> Title;
 	Sprite *_title = Sprite::create();
 	float picsize = Sprite::create("Title_1.png")->getContentSize().width;
 	Point biginPos = Point(designResolutionSize.width*0.5-picsize*1.5, designResolutionSize.height*0.7);
+	int poscount = 0;
 
-	_title->setTexture("Title_1.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_2.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_3.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_4.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_5.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_6.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_7.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_8.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_9.png");
-	Title.pushBack(_title);
-	_title->setTexture("Title_10.png");
-	Title.pushBack(_title);
+	Sprite *Title1 = Sprite::create("Title_1.png");
+	Sprite *Title2 = Sprite::create("Title_2.png");
+	Sprite *Title3 = Sprite::create("Title_3.png");
+	Sprite *Title4 = Sprite::create("Title_4.png");
+	Sprite *Title5 = Sprite::create("Title_5.png");
+	Sprite *Title6 = Sprite::create("Title_6.png");
+	Sprite *Title7 = Sprite::create("Title_7.png");
+	Sprite *Title8 = Sprite::create("Title_8.png");
+	Sprite *Title9 = Sprite::create("Title_9.png");
+	Sprite *Title10 = Sprite::create("Title_10.png");
 
-	for (int i = 0; i < Title.size(); i++)
-	{
-		if (i < 4)
-		{
-			Title.at(i)->setPosition(biginPos.x + picsize*i, biginPos.y);
-		}
-		else
-		{
-			Title.at(i)->setPosition(biginPos.x + picsize*(i - 5), biginPos.y - picsize);
-		}
-
-		addChild(Title.at(i));
-	}
+	Title1->setPosition(biginPos.x + picsize * 0, biginPos.y);
+	Title2->setPosition(biginPos.x + picsize * 1, biginPos.y);
+	Title3->setPosition(biginPos.x + picsize * 2, biginPos.y);
+	Title4->setPosition(biginPos.x + picsize * 3, biginPos.y);
+	Title5->setPosition(biginPos.x + picsize*-1, biginPos.y - picsize);
+	Title6->setPosition(biginPos.x + picsize * 0, biginPos.y - picsize);
+	Title7->setPosition(biginPos.x + picsize * 1, biginPos.y - picsize);
+	Title8->setPosition(biginPos.x + picsize * 2, biginPos.y - picsize);
+	Title9->setPosition(biginPos.x + picsize * 3, biginPos.y - picsize);
+	Title10->setPosition(biginPos.x + picsize * 4, biginPos.y - picsize);
 
 
-
-
+	addChild(Title1);
+	addChild(Title2);
+	addChild(Title3);
+	addChild(Title4);
+	addChild(Title5);
+	addChild(Title6);
+	addChild(Title7);
+	addChild(Title8);
+	addChild(Title9);
+	addChild(Title10);
 
 	TouchEvent();
 	return true;

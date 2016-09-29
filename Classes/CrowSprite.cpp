@@ -12,6 +12,7 @@ bool CrowSprite::init()
 	countFlg = 0;
 
 	Crow = Sprite::create("Crow_1.png");
+	Crow->setScale(0.8);
 	addChild(Crow);
 
 	scheduleUpdate();
