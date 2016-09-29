@@ -23,6 +23,7 @@ public:
 	Sprite* EnemyPic;
 
 	float Timer;
+	bool Flipflag;
 	int MoveDirection;
 
 	int AtackPattern;
@@ -40,6 +41,7 @@ public:
 	void SetStatus3();
 	void SetStatus4();
 	void SetStatus5();
+	void ChangeDirection();
 
 	CREATE_FUNC(EnemyLayer);
 };

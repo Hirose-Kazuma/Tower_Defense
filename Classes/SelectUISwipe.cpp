@@ -7,6 +7,8 @@ bool SelectUISwipe::init()
 		return false;
 	}
 
+	ButtonType = 0;
+
 
 	//タッチイベント取得
 	auto listener = EventListenerTouchOneByOne::create();
@@ -33,7 +35,15 @@ void SelectUISwipe::ButtonDisplay()
 	//キャラボタン
 	for (int i = 0; i < sizeof(Button) / sizeof(Button[0]); i++)
 	{
-		Button[i] = Sprite::create("B_Sword.png");
+		if (ButtonType == 0)Button[i] = Sprite::create("B_Sword.png");
+		else if(ButtonType == 1)Button[i] = Sprite::create("B_Rod.png");
+		else if (ButtonType == 2)Button[i] = Sprite::create("B_Sword.png");
+		else if (ButtonType == 3)Button[i] = Sprite::create("B_Sword.png");
+		else if (ButtonType == 4)Button[i] = Sprite::create("B_Sword.png");
+		else if (ButtonType == 5)Button[i] = Sprite::create("B_Sword.png");
+
+		ButtonType++;
+
 		Button[i]->setScaleY(0.7);
 
 		PicSize = Button[i]->getContentSize();

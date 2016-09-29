@@ -24,6 +24,7 @@ public:
 	float SwipeDirection;
 
 	int ButtonNum;
+	int ButtonType;
 
 	bool init();
 	void ButtonDisplay();
