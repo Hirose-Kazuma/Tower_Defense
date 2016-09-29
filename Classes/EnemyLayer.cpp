@@ -14,7 +14,7 @@ bool EnemyLayer::init()
 	//毎フレーム処理
 	this->scheduleUpdate();
 
-	PicDisplay();
+	//PicDisplay();
 
 	return true;
 }
@@ -22,6 +22,8 @@ bool EnemyLayer::init()
 void EnemyLayer::update(float delta)
 {
 	Timer += delta;
+
+	Animation(AnimationPattern);
 
 	if (Timer >= 1.0f) 
 	{
@@ -41,9 +43,10 @@ void EnemyLayer::PicDisplay()
 
 void EnemyLayer::SetStatus0()
 {
-	this->initWithFile("Enemy.png");
-	this->setFlipX(true);
+	this->initWithFile("Crow_1.png");
+	this->setScale(0.2);
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -54,6 +57,7 @@ void EnemyLayer::SetStatus1()
 {
 	this->initWithFile("Enemy.png");
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -64,6 +68,7 @@ void EnemyLayer::SetStatus2()
 {
 	this->initWithFile("Enemy.png");
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -74,6 +79,7 @@ void EnemyLayer::SetStatus3()
 {
 	this->initWithFile("Enemy.png");
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -84,6 +90,7 @@ void EnemyLayer::SetStatus4()
 {
 	this->initWithFile("Enemy.png");
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -94,6 +101,7 @@ void EnemyLayer::SetStatus5()
 {
 	this->initWithFile("Enemy.png");
 
+	AnimationPattern = 0;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -113,5 +121,25 @@ void EnemyLayer::ChangeDirection()
 	{
 		this->setFlipX(true);
 		Flipflag = true;
+	}
+}
+
+
+void EnemyLayer::Animation(int SpriteType)
+{
+	//カラスアニメーション
+	if (SpriteType == 0)
+	{
+		countFlg++;
+
+		if (countFlg == 10)
+		{
+			this->setTexture("Crow_2.png");
+		}
+		else if (countFlg == 20)
+		{
+			this->setTexture("Crow_1.png");
+			countFlg = 0;
+		}
 	}
 }
