@@ -24,8 +24,10 @@ public:
 
 	float Timer;
 	bool Flipflag;
+	int countFlg;
 	int MoveDirection;
 
+	int AnimationPattern;
 	int AtackPattern;
 	int HP;
 	int AT;
@@ -42,6 +44,7 @@ public:
 	void SetStatus4();
 	void SetStatus5();
 	void ChangeDirection();
+	void Animation(int SpriteType);
 
 	CREATE_FUNC(EnemyLayer);
 };

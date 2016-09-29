@@ -34,6 +34,9 @@ bool BattleLayer::init()
 
 	return true;
 }
+
+
+
 //----------------------------------------------------------------
 //initSprite
 //----------------------------------------------------------------
@@ -51,6 +54,8 @@ void BattleLayer::StartSprite()
 	P_HouseRect = House[1]->getBoundingBox();
 	addChild(House[1]);
 }
+
+
 
 //----------------------------------------------------------------
 //毎フレーム処理
@@ -85,28 +90,33 @@ void BattleLayer::update(float delta)
 
 				AtackTime += delta;
 
-				//攻撃
-				if (Atackflag == false)
+				//Player攻撃
+				if (P_Atackflag == false)
 				{
-					CharBattle(i, n);
+					CharBattle(0, i, n);
 
-					Atackflag = true;
-
-					//要改善 死亡処理
-					if (E_HP[i] <= 0)
-					{
-						_enemylayer[i]->setVisible(false);
-						_enemylayer[i]->setPosition(0, 0);
-
-						E_Desflag[i] = true;
-						AtackTime = 0;
-					}
+					P_Atackflag = true;
 				}
-				//攻撃ディレイ
+				//Player攻撃ディレイ
 				else if (AtackTime >= 3.0)
 				{
 					AtackTime = 0;
-					Atackflag = false;
+					P_Atackflag = false;
+				}
+
+
+				//Enemy攻撃
+				if (E_Atackflag == false)
+				{
+					CharBattle(1, n, i);
+
+					E_Atackflag = true;
+				}
+				//Player攻撃ディレイ
+				else if (AtackTime >= 3.0)
+				{
+					AtackTime = 0;
+					E_Atackflag = false;
 				}
 			}
 			//進軍
@@ -199,6 +209,9 @@ void BattleLayer::update(float delta)
 
 	
 }
+
+
+
 //----------------------------------------------------------------
 //Enemy生成
 //----------------------------------------------------------------
@@ -233,6 +246,8 @@ void BattleLayer::EnemyDisplay()
 		_enemylayer[EnemyCount] = nullptr;
 	}
 }
+
+
 
 //----------------------------------------------------------------
 //Player生成
@@ -271,13 +286,42 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 
 }
 
+
+
 //----------------------------------------------------------------
 //キャラバトル
 //----------------------------------------------------------------
-void BattleLayer::CharBattle(int E_Num, int P_Num)
+void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 {
-	E_HP[E_Num] -= P_AT[P_Num];
+	if (AttackDir == 0) 
+	{
+		E_HP[E_Num] -= P_AT[P_Num];
+
+		//要改善 死亡処理
+		if (E_HP[E_Num] <= 0)
+		{
+			_enemylayer[E_Num]->setVisible(false);
+			_enemylayer[E_Num]->setPosition(0, 0);
+
+			AtackTime = 0;
+		}
+	}
+	else if (AttackDir == 1)
+	{
+		P_HP[P_Num] -= E_AT[E_Num];
+
+		//死亡処理
+		if (P_HP[P_Num] <= 0)
+		{
+			_playerlayer[P_Num]->setVisible(false);
+			_playerlayer[P_Num]->setPosition(0, 0);
+
+			AtackTime = 0;
+		}
+	}
 }
+
+
 
 //----------------------------------------------------------------
 //拠点攻撃
@@ -316,6 +360,8 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	}
 }
 
+
+
 //----------------------------------------------------------------
 //タッチ開始
 //----------------------------------------------------------------
@@ -345,6 +391,8 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 	return true;
 }
 
+
+
 //----------------------------------------------------------------
 //タッチ中
 //----------------------------------------------------------------
@@ -359,6 +407,8 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 		this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
 	}
 }
+
+
 
 //----------------------------------------------------------------
 //タッチ終了
@@ -400,6 +450,8 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 		PlayerSwipe(Direction, TouchSpriteNum);
 	}
 }
+
+
 
 //----------------------------------------------------------------
 //Playerスワイプ処理

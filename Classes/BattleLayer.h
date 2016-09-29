@@ -21,9 +21,8 @@ public:
 	PlayerLayer* _playerlayer[1000];
 
 	bool Displayflag;
-	bool Atackflag;
-	bool E_Desflag[1000];
-	bool P_Desflag[1000];
+	bool P_Atackflag;
+	bool E_Atackflag;
 	bool Winflag;
 	bool SpriteTouchflag;
 
@@ -64,7 +63,7 @@ public:
 	void StartSprite();
 	void EnemyDisplay();
 	void PlayerDisplay(int CharNum, float Pos);
-	void CharBattle(int E_Num, int P_Num);
+	void CharBattle(int AttackDir, int E_Num, int P_Num);
 	void BaseBattle(int BaseNum, int Num);
 	void PlayerSwipe(int DirectionS ,int Num);
 	CREATE_FUNC(BattleLayer);
