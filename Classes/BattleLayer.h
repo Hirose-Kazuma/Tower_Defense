@@ -13,6 +13,7 @@ class BattleLayer :public Layer
 private:
 	// タッチイベント処理
 	virtual bool onTouchBegan(Touch* pTouch, Event* pEvent);
+	virtual void onTouchMoved(Touch* pTouch, Event* pEvent);
 	virtual void onTouchEnded(Touch* pTouch, Event* pEvent);
 
 public:
@@ -31,9 +32,9 @@ public:
 	float SwipeDirectionX;
 	float SwipeDirectionY;
 
-	int P_Cost;
+	int P_TotalCost;
 	int P_PulasCost;
-	int E_Cost;
+	int E_TotalCost;
 	int E_PulasCost;
 	int Direction;
 	int TouchSpriteNum;

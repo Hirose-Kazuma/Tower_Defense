@@ -12,6 +12,7 @@ public:
 	Sprite* PlayerPic;
 
 	float Timer;
+	bool Flipflag;
 	int MoveDirection;
 
 	int AtackPattern;

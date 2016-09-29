@@ -9,7 +9,7 @@ bool EnemyLayer::init()
 	}
 
 	Timer = 0;
-	MoveDirection = 1;
+	MoveDirection = -1;
 
 	//–ˆƒtƒŒ[ƒ€ˆ—
 	this->scheduleUpdate();
@@ -36,12 +36,13 @@ void EnemyLayer::update(float delta)
 void EnemyLayer::PicDisplay()
 {
 	this->initWithFile("Enemy.png");
-	//this->setPosition(Vec2(designResolutionSize.width * 0.2, designResolutionSize.height * 0.5));
+	this->setFlipX(true);
 }
 
 void EnemyLayer::SetStatus0()
 {
 	this->initWithFile("Enemy.png");
+	this->setFlipX(true);
 
 	AtackPattern = 1;
 	HP = 3;
@@ -97,4 +98,20 @@ void EnemyLayer::SetStatus5()
 	HP = 3;
 	AT = 1;
 	COST = 1;
+}
+
+void EnemyLayer::ChangeDirection()
+{
+	MoveDirection *= -1;
+
+	if (Flipflag == true)
+	{
+		this->setFlipX(false);
+		Flipflag = false;
+	}
+	else
+	{
+		this->setFlipX(true);
+		Flipflag = true;
+	}
 }
