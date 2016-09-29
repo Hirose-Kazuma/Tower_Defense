@@ -7,15 +7,12 @@ bool BattleLayer::init()
 		return false;
 	}
 
+	GameSpeed = 1.0f;//等倍
+	//GameSpeed = 0.5f;//倍速
 	HouseHP[0] = 3;
 	HouseHP[1] = 3;
-<<<<<<< HEAD
-	P_Cost = 5;
-	E_Cost = 5;
-=======
-	P_TotalCost = 5;
+	P_TotalCost = 105;
 	E_TotalCost = 5;
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
 
 
 	//タッチイベント取得
@@ -32,25 +29,15 @@ bool BattleLayer::init()
 
 	StartSprite();
 
-	//EnemyDisplay();
 
 	//毎フレーム処理
 	this->scheduleUpdate();
 
 	return true;
 }
-<<<<<<< HEAD
 
 
 
-=======
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //initSprite
 //----------------------------------------------------------------
@@ -69,16 +56,8 @@ void BattleLayer::StartSprite()
 	addChild(House[1]);
 }
 
-<<<<<<< HEAD
 
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //毎フレーム処理
 //----------------------------------------------------------------
@@ -86,10 +65,10 @@ void BattleLayer::update(float delta)
 {
 	SpawnTimer += delta;
 
-	if (SpawnTimer >= 3.0f)
+	if (SpawnTimer >= (3.0f * GameSpeed))
 	{
 		EnemyDisplay();
-		
+
 		SpawnTimer = 0;
 	}
 
@@ -110,7 +89,8 @@ void BattleLayer::update(float delta)
 				_enemylayer[i]->stopAllActions();
 				_playerlayer[n]->stopAllActions();
 
-				AtackTime += delta;
+				P_AtackTime += delta;
+				E_AtackTime += delta;
 
 				//Player攻撃
 				if (P_Atackflag == false)
@@ -120,9 +100,9 @@ void BattleLayer::update(float delta)
 					P_Atackflag = true;
 				}
 				//Player攻撃ディレイ
-				else if (AtackTime >= 3.0)
+				else if (P_AtackTime >= (3.0 * GameSpeed))
 				{
-					AtackTime = 0;
+					P_AtackTime = 0;
 					P_Atackflag = false;
 				}
 
@@ -135,9 +115,9 @@ void BattleLayer::update(float delta)
 					E_Atackflag = true;
 				}
 				//Player攻撃ディレイ
-				else if (AtackTime >= 3.0)
+				else if (E_AtackTime >= (3.0 * GameSpeed))
 				{
-					AtackTime = 0;
+					E_AtackTime = 0;
 					E_Atackflag = false;
 				}
 			}
@@ -231,18 +211,9 @@ void BattleLayer::update(float delta)
 
 	
 }
-<<<<<<< HEAD
 
 
 
-=======
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Enemy生成
 //----------------------------------------------------------------
@@ -251,6 +222,7 @@ void BattleLayer::EnemyDisplay()
 	_enemylayer[EnemyCount] = EnemyLayer::create();
 	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * 0.5));
 	_enemylayer[EnemyCount]->SetStatus0();
+	_enemylayer[EnemyCount]->ChangeSpeed(GameSpeed);
 
 	/*if (CharNum == 0)_enemylayer[EnemyCount]->SetStatus0();
 	else if (CharNum == 1)_enemylayer[EnemyCount]->SetStatus1();
@@ -278,16 +250,8 @@ void BattleLayer::EnemyDisplay()
 	}
 }
 
-<<<<<<< HEAD
 
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Player生成
 //----------------------------------------------------------------
@@ -296,6 +260,7 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 	//キャラ振り分けはクラスの関数で設定
 	_playerlayer[PlayerCount] = PlayerLayer::create();
 	_playerlayer[PlayerCount]->setPosition(Vec2(designResolutionSize.width * 0.2, designResolutionSize.height * (0.4 + Pos)));
+	_playerlayer[PlayerCount]->ChangeSpeed(GameSpeed);
 
 	if (CharNum == 0)_playerlayer[PlayerCount]->SetStatus0();
 	else if(CharNum == 1)_playerlayer[PlayerCount]->SetStatus1();
@@ -325,16 +290,8 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 
 }
 
-<<<<<<< HEAD
 
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //キャラバトル
 //----------------------------------------------------------------
@@ -350,7 +307,7 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_enemylayer[E_Num]->setVisible(false);
 			_enemylayer[E_Num]->setPosition(0, 0);
 
-			AtackTime = 0;
+			P_AtackTime = 0;
 		}
 	}
 	else if (AttackDir == 1)
@@ -363,21 +320,13 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_playerlayer[P_Num]->setVisible(false);
 			_playerlayer[P_Num]->setPosition(0, 0);
 
-			AtackTime = 0;
+			E_AtackTime = 0;
 		}
 	}
 }
 
-<<<<<<< HEAD
 
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //拠点攻撃
 //----------------------------------------------------------------
@@ -415,26 +364,21 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	}
 }
 
-<<<<<<< HEAD
 
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //タッチ開始
 //----------------------------------------------------------------
 bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	//タッチポイント
+	//タッチポイント 見えてる範囲でとってる
 	Vec2 tp = pTouch->getLocation();
 
 	SwipeDirectionX = tp.x;
 	SwipeDirectionY = tp.y;
+
+	tp.x -= PointRepairX;
+		
 
 	//このレイヤー内のオブジェクトがタッチされているか
 	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
@@ -463,27 +407,9 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 {
 	//Layer移動させるマン
 	Vec2 swipe = pTouch->getDelta();
-	Vec2 layerpos = this->getPosition();
+	PointRepairX += swipe.x;
+	log("%f", PointRepairX);
 
-	if (SpriteTouchflag != true)
-	{
-		this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
-	}
-}
-
-<<<<<<< HEAD
-
-
-=======
-<<<<<<< HEAD
-
-//----------------------------------------------------------------
-//タッチ中
-//----------------------------------------------------------------
-void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
-{
-	//Layer移動させるマン
-	Vec2 swipe = pTouch->getDelta();
 	Vec2 layerpos = this->getPosition();
 
 	if (SpriteTouchflag != true)
@@ -494,9 +420,6 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 
 
 
-=======
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //タッチ終了
 //----------------------------------------------------------------
@@ -520,7 +443,6 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 	else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
 	{
 		Direction = 1;
-<<<<<<< HEAD
 	}
 	//上
 	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
@@ -541,29 +463,6 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 
 
 
-<<<<<<< HEAD
-=======
-=======
-	}
-	//上
-	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-	{
-		Direction = 2;
-	}
-	//下
-	else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
-	{
-		Direction = 3;
-	}
-	//エラー回避
-	if (_playerlayer[TouchSpriteNum] != nullptr)
-	{
-		PlayerSwipe(Direction, TouchSpriteNum);
-	}
-}
-
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
->>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Playerスワイプ処理
 //----------------------------------------------------------------
@@ -575,19 +474,11 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 			_playerlayer[Num]->ChangeDirection();
 		}
 		else if (DirectionS == 1)
-<<<<<<< HEAD
 		{
 			_playerlayer[Num]->ChangeDirection();
 		}
 		else if (DirectionS == 2)
 		{
-=======
-		{
-			_playerlayer[Num]->ChangeDirection();
-		}
-		else if (DirectionS == 2)
-		{
->>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
 			if (_playerlayer[Num]->getPosition().y < designResolutionSize.height * 0.6)
 			{
 				auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
@@ -607,4 +498,44 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 	}
 
 	SpriteTouchflag = false;
+}
+
+
+//----------------------------------------------------------------
+//魔法陣
+//----------------------------------------------------------------
+void BattleLayer::Magic_Jin()
+{
+	//魔法陣表示
+	_magicNode = MagicNode::create();
+	//_magicNode->setPosition(Vec2(designResolutionSize.width * 0.3, designResolutionSize.height * 0.5));
+	_magicNode->setScale(0.05);
+	addChild(_magicNode);
+
+	//魔法陣アクション
+	_magicNode->runAction(ActionBox::MagicJinAction());
+
+	//杖表示
+	Sprite *Test_Rod = Sprite::create("C_Rod.png");
+	Test_Rod->setScale(0.5);
+	Test_Rod->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	Test_Rod->setPosition(_magicNode->getPosition());
+	Test_Rod->setOpacity(0);
+	addChild(Test_Rod);
+
+
+	//杖アクション
+	Test_Rod->runAction(ActionBox::MagicRodAction());
+
+
+	//
+	Sprite *MagicLight = Sprite::create("DrawNode.png");
+	MagicLight->setColor(Color3B::RED);
+	MagicLight->setPosition(_magicNode->getPosition());
+	MagicLight->setScale(0.25);
+	MagicLight->setOpacity(0);
+	addChild(MagicLight);
+
+	MagicLight->runAction(ActionBox::MagicLightAction());
+
 }
