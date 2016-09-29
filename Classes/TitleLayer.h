@@ -20,6 +20,5 @@ public:
 	void TouchMove(Touch *touch, Event *event);
 	void TouchEnd(Touch *touch, Event *event);
 
-
 };
 #endif // !__TITLE_LAYER__

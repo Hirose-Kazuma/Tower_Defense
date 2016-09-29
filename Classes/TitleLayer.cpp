@@ -28,7 +28,45 @@ bool TitleLayer::init()
 	addChild(TitleLabel_c);
 	addChild(TitleLabel_h);
 
+	Vector<Sprite*> Title;
+	Sprite *_title = Sprite::create();
+	float picsize = Sprite::create("Title_1.png")->getContentSize().width;
+	Point biginPos = Point(designResolutionSize.width*0.5-picsize*1.5, designResolutionSize.height*0.7);
 
+	_title->setTexture("Title_1.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_2.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_3.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_4.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_5.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_6.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_7.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_8.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_9.png");
+	Title.pushBack(_title);
+	_title->setTexture("Title_10.png");
+	Title.pushBack(_title);
+
+	for (int i = 0; i < Title.size(); i++)
+	{
+		if (i < 4)
+		{
+			Title.at(i)->setPosition(biginPos.x + picsize*i, biginPos.y);
+		}
+		else
+		{
+			Title.at(i)->setPosition(biginPos.x + picsize*(i - 5), biginPos.y - picsize);
+		}
+
+		addChild(Title.at(i));
+	}
 
 
 
