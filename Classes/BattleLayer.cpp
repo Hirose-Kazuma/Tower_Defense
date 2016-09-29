@@ -9,8 +9,13 @@ bool BattleLayer::init()
 
 	HouseHP[0] = 3;
 	HouseHP[1] = 3;
+<<<<<<< HEAD
+	P_Cost = 5;
+	E_Cost = 5;
+=======
 	P_TotalCost = 5;
 	E_TotalCost = 5;
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
 
 
 	//タッチイベント取得
@@ -34,9 +39,18 @@ bool BattleLayer::init()
 
 	return true;
 }
+<<<<<<< HEAD
 
 
 
+=======
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //initSprite
 //----------------------------------------------------------------
@@ -55,8 +69,16 @@ void BattleLayer::StartSprite()
 	addChild(House[1]);
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //毎フレーム処理
 //----------------------------------------------------------------
@@ -209,9 +231,18 @@ void BattleLayer::update(float delta)
 
 	
 }
+<<<<<<< HEAD
 
 
 
+=======
+<<<<<<< HEAD
+
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Enemy生成
 //----------------------------------------------------------------
@@ -247,8 +278,16 @@ void BattleLayer::EnemyDisplay()
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Player生成
 //----------------------------------------------------------------
@@ -286,8 +325,16 @@ void BattleLayer::PlayerDisplay(int CharNum, float Pos)
 
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //キャラバトル
 //----------------------------------------------------------------
@@ -321,8 +368,16 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //拠点攻撃
 //----------------------------------------------------------------
@@ -360,8 +415,16 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //タッチ開始
 //----------------------------------------------------------------
@@ -408,8 +471,32 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 	}
 }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+
+//----------------------------------------------------------------
+//タッチ中
+//----------------------------------------------------------------
+void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
+{
+	//Layer移動させるマン
+	Vec2 swipe = pTouch->getDelta();
+	Vec2 layerpos = this->getPosition();
+
+	if (SpriteTouchflag != true)
+	{
+		this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
+	}
+}
+
+
+
+=======
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //タッチ終了
 //----------------------------------------------------------------
@@ -433,6 +520,7 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 	else if (SwipeDirectionX >= 0 && SwipeDirectionY >= -100 && SwipeDirectionY <= 100)
 	{
 		Direction = 1;
+<<<<<<< HEAD
 	}
 	//上
 	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
@@ -453,6 +541,29 @@ void BattleLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 
 
 
+<<<<<<< HEAD
+=======
+=======
+	}
+	//上
+	else if (SwipeDirectionY <= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+	{
+		Direction = 2;
+	}
+	//下
+	else if (SwipeDirectionY >= 0 && SwipeDirectionX >= -100 && SwipeDirectionX <= 100)
+	{
+		Direction = 3;
+	}
+	//エラー回避
+	if (_playerlayer[TouchSpriteNum] != nullptr)
+	{
+		PlayerSwipe(Direction, TouchSpriteNum);
+	}
+}
+
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
+>>>>>>> ba8e93292b6b9425ccb1e6f267f06506941db9fc
 //----------------------------------------------------------------
 //Playerスワイプ処理
 //----------------------------------------------------------------
@@ -464,11 +575,19 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 			_playerlayer[Num]->ChangeDirection();
 		}
 		else if (DirectionS == 1)
+<<<<<<< HEAD
 		{
 			_playerlayer[Num]->ChangeDirection();
 		}
 		else if (DirectionS == 2)
 		{
+=======
+		{
+			_playerlayer[Num]->ChangeDirection();
+		}
+		else if (DirectionS == 2)
+		{
+>>>>>>> bc03f86b93ffd6f537a042517fb7e0692f741bf8
 			if (_playerlayer[Num]->getPosition().y < designResolutionSize.height * 0.6)
 			{
 				auto move = MoveTo::create(1, Point(_playerlayer[Num]->getPosition().x,
