@@ -41,6 +41,8 @@ void EnemyLayer::PicDisplay()
 	this->setFlipX(true);
 }
 
+
+//烏
 void EnemyLayer::SetStatus0()
 {
 	this->initWithFile("Crow_1.png");
@@ -53,22 +55,26 @@ void EnemyLayer::SetStatus0()
 	COST = 1;
 }
 
+//雑魚
 void EnemyLayer::SetStatus1()
 {
-	this->initWithFile("Enemy.png");
+	this->initWithFile("zako_1.png");
+	this->setScale(0.2);
 
-	AnimationPattern = 0;
+	AnimationPattern = 1;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
 	COST = 1;
 }
 
+//鰯
 void EnemyLayer::SetStatus2()
 {
-	this->initWithFile("Enemy.png");
+	this->initWithFile("iwasi_1.png");
+	this->setScale(0.2);
 
-	AnimationPattern = 0;
+	AnimationPattern = 2;
 	AtackPattern = 1;
 	HP = 3;
 	AT = 1;
@@ -139,6 +145,36 @@ void EnemyLayer::Animation(int SpriteType)
 		else if (countFlg == (20 * GameSpeed))
 		{
 			this->setTexture("Crow_1.png");
+			countFlg = 0;
+		}
+	}
+	//雑魚アニメーション
+	else if (SpriteType == 1)
+	{
+		countFlg++;
+
+		if (countFlg == (10 * GameSpeed))
+		{
+			this->setTexture("zako_2.png");
+		}
+		else if (countFlg == (20 * GameSpeed))
+		{
+			this->setTexture("zako_1.png");
+			countFlg = 0;
+		}
+	}
+	//鰯アニメーション
+	else if (SpriteType == 2)
+	{
+		countFlg++;
+
+		if (countFlg == (10 * GameSpeed))
+		{
+			this->setTexture("iwasi_2.png");
+		}
+		else if (countFlg == (20 * GameSpeed))
+		{
+			this->setTexture("iwasi_1.png");
 			countFlg = 0;
 		}
 	}

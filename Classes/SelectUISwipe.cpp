@@ -44,8 +44,6 @@ void SelectUISwipe::ButtonDisplay()
 
 		ButtonType++;
 
-		Button[i]->setScaleY(0.7);
-
 		PicSize = Button[i]->getContentSize();
 
 		Button[i]->setPosition(Vec2(designResolutionSize.width * 0.1 + (i * PicSize.width),
@@ -106,8 +104,6 @@ void SelectUISwipe::onTouchEnded(Touch* pTouch, Event* pEvent)
 //ボタンタップ判定
 void SelectUISwipe::ButtonTap(int Num)
 {
-	log("Number%d--tap", Num);
-
 	_battlelayer->PlayerDisplay(Num, 0.1);
 }
 
@@ -115,8 +111,6 @@ void SelectUISwipe::ButtonTap(int Num)
 //上スワイプ判定
 void SelectUISwipe::ButtonSwipeUP(int Num)
 {
-	log("Number%d--down", Num);
-
 	_battlelayer->PlayerDisplay(Num, 0);
 }
 
@@ -124,7 +118,11 @@ void SelectUISwipe::ButtonSwipeUP(int Num)
 //下スワイプ判定
 void SelectUISwipe::ButtonSwipeDOUW(int Num)
 {
-	log("Number%d--up", Num);
-
 	_battlelayer->PlayerDisplay(Num, 0.2);
+}
+
+//pullボタン判定
+void SelectUISwipe::ButtonPull(int Num)
+{
+
 }

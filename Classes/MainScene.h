@@ -6,6 +6,7 @@
 #include "MagicNode.h"
 #include "BackLayer.h"
 #include "SelectUISwipe.h"
+#include "PullUI.h"
 
 
 USING_NS_CC;
@@ -31,6 +32,7 @@ public:
 	MagicNode* _magicNode;
 	BackLayer* _backlayer;
 	SelectUISwipe* _selectuiswipe;
+	PullUI* _pullui;
 
 	static cocos2d::Scene* createScene();
 

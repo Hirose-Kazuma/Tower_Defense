@@ -31,6 +31,7 @@ public:
 	void ButtonTap(int Num);
 	void ButtonSwipeUP(int Num);
 	void ButtonSwipeDOUW(int Num);
+	void ButtonPull(int Num);
 
 	CREATE_FUNC(SelectUISwipe);
 };

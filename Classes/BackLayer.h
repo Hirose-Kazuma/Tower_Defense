@@ -11,11 +11,14 @@ class BackLayer :public Layer
 private:
 
 public:
+	Sprite* bg_Sprite;
+
 	int Timer;
 
 	bool init();
 	void StartPic();
 	void update(float delta);
+	void ScrollLayer(float delta);
 
 	CREATE_FUNC(BackLayer);
 };

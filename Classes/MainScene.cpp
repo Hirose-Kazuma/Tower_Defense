@@ -56,13 +56,14 @@ bool MainScene::init()
 	//};
 	//Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-
-
 	_backlayer = BackLayer::create();
 	addChild(_backlayer, 0);
 
-	_selectuiswipe = SelectUISwipe::create();
-	addChild(_selectuiswipe, 2);
+	_pullui = PullUI::create();
+	addChild(_pullui, 1);
+
+	/*_selectuiswipe = SelectUISwipe::create();
+	addChild(_selectuiswipe, 1);*/
 
 	return true;
 }

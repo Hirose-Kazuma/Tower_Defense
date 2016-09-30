@@ -221,7 +221,7 @@ void BattleLayer::EnemyDisplay()
 {
 	_enemylayer[EnemyCount] = EnemyLayer::create();
 	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * 0.5));
-	_enemylayer[EnemyCount]->SetStatus0();
+	_enemylayer[EnemyCount]->SetStatus2();
 	_enemylayer[EnemyCount]->ChangeSpeed(GameSpeed);
 
 	/*if (CharNum == 0)_enemylayer[EnemyCount]->SetStatus0();
@@ -378,7 +378,6 @@ bool BattleLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 	SwipeDirectionY = tp.y;
 
 	tp.x -= PointRepairX;
-		
 
 	//このレイヤー内のオブジェクトがタッチされているか
 	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
@@ -407,8 +406,12 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 {
 	//Layer移動させるマン
 	Vec2 swipe = pTouch->getDelta();
-	PointRepairX += swipe.x;
-	log("%f", PointRepairX);
+
+	//Spriteがタッチされていないとき
+	if (SpriteTouchflag == false)
+	{
+		PointRepairX += swipe.x;
+	}
 
 	Vec2 layerpos = this->getPosition();
 
