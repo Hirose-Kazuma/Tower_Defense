@@ -13,8 +13,14 @@ public:
 
 	bool init();
 	void update(float delta);
+	void IwasiCreate();
+	void ZakoCreate();
+	void CrowCreate();
+	void ArrayDelete(int number);
 
 	Sprite *BackGround;
+	Vector<Sprite*> _enemyTeam;
+	int TeamNumber;
 
 	Point UP_Pos;
 	Point Middle_Pos;
