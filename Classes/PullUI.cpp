@@ -26,7 +26,7 @@ bool PullUI::init()
 	StartPic();
 
 	//–ˆƒtƒŒ[ƒ€ˆ—
-	this->scheduleUpdate();
+	//this->scheduleUpdate();
 
 	return true;
 }

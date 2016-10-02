@@ -1,4 +1,6 @@
 #include "BattleLayer.h"
+#include "VoidScene.h"
+#include "TitleScene.h"
 
 bool BattleLayer::init()
 {
@@ -8,10 +10,9 @@ bool BattleLayer::init()
 	}
 
 	GameSpeed = 1.0f;//等倍
-	//GameSpeed = 0.5f;//倍速
 	HouseHP[0] = 3;
 	HouseHP[1] = 3;
-	P_TotalCost = 105;
+	P_TotalCost = 99;
 	E_TotalCost = 5;
 
 
@@ -39,7 +40,7 @@ bool BattleLayer::init()
 
 
 //----------------------------------------------------------------
-//initSprite
+//初期画像
 //----------------------------------------------------------------
 void BattleLayer::StartSprite()
 {
@@ -54,6 +55,16 @@ void BattleLayer::StartSprite()
 	House[1]->setPosition(Vec2(designResolutionSize.width * 0.1, designResolutionSize.height * 0.6));
 	P_HouseRect = House[1]->getBoundingBox();
 	addChild(House[1]);
+
+	//コスト表示01
+	CostSprite[0] = Sprite::create("num_0.png");
+	CostSprite[0]->setPosition(Vec2(designResolutionSize.width * 0.95, designResolutionSize.height * 0.1));
+	addChild(CostSprite[0]);
+
+	//コスト表示10
+	CostSprite[1] = Sprite::create("num_0.png");
+	CostSprite[1]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.1));
+	addChild(CostSprite[1]);
 }
 
 
@@ -63,153 +74,193 @@ void BattleLayer::StartSprite()
 //----------------------------------------------------------------
 void BattleLayer::update(float delta)
 {
-	SpawnTimer += delta;
-
-	if (SpawnTimer >= (3.0f * GameSpeed))
+	//一時停止していないとき
+	if (Stopflag == false)
 	{
-		EnemyDisplay();
 
-		SpawnTimer = 0;
-	}
+		SpawnTimer += delta;
 
-	//敵とのあたり判定
-	for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
-	{
-		if (_enemylayer[i] == nullptr)break;
-		for (int n = 0; n < sizeof(_playerlayer) / sizeof(_playerlayer[0]); n++)
+		if (SpawnTimer >= (3.0f * GameSpeed))
 		{
-			if (_playerlayer[n] == nullptr)break;
+			EnemyDisplay();
 
-			EnemyRect = _enemylayer[i]->getBoundingBox();
-			PlayerRect = _playerlayer[n]->getBoundingBox();
+			SpawnTimer = 0;
+		}
 
-			//当たっているとき
-			if (EnemyRect.intersectsRect(PlayerRect))
+		//敵とのあたり判定
+		for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+		{
+			if (_enemylayer[i] == nullptr)break;
+			for (int n = 0; n < sizeof(_playerlayer) / sizeof(_playerlayer[0]); n++)
 			{
-				_enemylayer[i]->stopAllActions();
-				_playerlayer[n]->stopAllActions();
+				if (_playerlayer[n] == nullptr)break;
 
-				P_AtackTime += delta;
-				E_AtackTime += delta;
+				EnemyRect = _enemylayer[i]->getBoundingBox();
+				PlayerRect = _playerlayer[n]->getBoundingBox();
+
+				//当たっているとき
+				if (EnemyRect.intersectsRect(PlayerRect))
+				{
+					_enemylayer[i]->stopAllActions();
+					_playerlayer[n]->stopAllActions();
+
+					P_AtackTime[i] += delta;
+					E_AtackTime[n] += delta;
+
+					//Player攻撃
+					if (P_Atackflag == false)
+					{
+						CharBattle(0, i, n);
+
+						P_Atackflag = true;
+					}
+					//Player攻撃ディレイ
+					else if (P_AtackTime[i] >= (3.0 * GameSpeed))
+					{
+						P_AtackTime[i] = 0;
+						P_Atackflag = false;
+					}
+
+
+					//Enemy攻撃
+					if (E_Atackflag == false)
+					{
+						CharBattle(1, n, i);
+
+						E_Atackflag = true;
+					}
+					//Player攻撃ディレイ
+					else if (E_AtackTime[n] >= (3.0 * GameSpeed))
+					{
+						E_AtackTime[n] = 0;
+						E_Atackflag = false;
+					}
+				}
+				//進軍
+				else
+				{
+
+				}
+			}
+		}
+
+		//プレイヤーどうしのあたり判定
+		for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+		{
+			if (_playerlayer[i] == nullptr)break;
+			for (int n = 0; n < (sizeof(_playerlayer) / sizeof(_playerlayer[0])) - 1; n++)
+			{
+				if (_playerlayer[n] == nullptr || i == n)break;
+
+				PlayerRect = _playerlayer[i]->getBoundingBox();
+				SubRect = _playerlayer[n]->getBoundingBox();
+
+				if (PlayerRect.intersectsRect(SubRect))
+				{
+					_playerlayer[i]->stopAllActions();
+				}
+				else
+				{
+
+				}
+			}
+		}
+
+		//敵どうしのあたり判定
+		for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+		{
+			if (_enemylayer[i] == nullptr)break;
+			for (int n = 0; n < (sizeof(_enemylayer) / sizeof(_enemylayer[0])) - 1; n++)
+			{
+				if (_enemylayer[n] == nullptr || i == n)break;
+
+				EnemyRect = _enemylayer[i]->getBoundingBox();
+				SubRect = _enemylayer[n]->getBoundingBox();
+
+				if (EnemyRect.intersectsRect(SubRect))
+				{
+					_enemylayer[i]->stopAllActions();
+				}
+				else
+				{
+
+				}
+			}
+		}
+
+		//敵拠点のあたり判定
+		for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+		{
+			if (_playerlayer[i] == nullptr)break;
+
+			PlayerRect = _playerlayer[i]->getBoundingBox();
+
+			if (PlayerRect.intersectsRect(E_HouseRect))
+			{
+				P_AtackTime[i] += delta;
+
+				_playerlayer[i]->stopAllActions();
+				
 
 				//Player攻撃
 				if (P_Atackflag == false)
 				{
-					CharBattle(0, i, n);
+					BaseBattle(0, i);
 
 					P_Atackflag = true;
 				}
 				//Player攻撃ディレイ
-				else if (P_AtackTime >= (3.0 * GameSpeed))
+				else if (P_AtackTime[i] >= (3.0 * GameSpeed))
 				{
-					P_AtackTime = 0;
+					P_AtackTime[i] = 0;
 					P_Atackflag = false;
 				}
+			}
+		}
+
+		//味方拠点のあたり判定
+		for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+		{
+			if (_enemylayer[i] == nullptr)break;
+
+			EnemyRect = _enemylayer[i]->getBoundingBox();
+
+			if (EnemyRect.intersectsRect(P_HouseRect))
+			{
+				E_AtackTime[i] += delta;
+
+				_enemylayer[i]->stopAllActions();
+				
 
 
 				//Enemy攻撃
 				if (E_Atackflag == false)
 				{
-					CharBattle(1, n, i);
+					BaseBattle(1, i);
 
 					E_Atackflag = true;
 				}
-				//Player攻撃ディレイ
-				else if (E_AtackTime >= (3.0 * GameSpeed))
+				//enemy攻撃ディレイ
+				else if (E_AtackTime[i] >= (3.0 * GameSpeed))
 				{
-					E_AtackTime = 0;
+					E_AtackTime[i] = 0;
 					E_Atackflag = false;
 				}
 			}
-			//進軍
-			else
-			{
-
-			}
 		}
 	}
 
-	//プレイヤーどうしのあたり判定
-	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
-	{
-		if (_playerlayer[i] == nullptr)break;
-		for (int n = 0; n < (sizeof(_playerlayer) / sizeof(_playerlayer[0])) - 1; n++)
-		{
-			if (_playerlayer[n] == nullptr || i == n)break;
 
-			PlayerRect = _playerlayer[i]->getBoundingBox();
-			SubRect = _playerlayer[n]->getBoundingBox();
+	//総コスト表示01
+	CostNum[0] = P_TotalCost % 10;
+	filename[0] = String::createWithFormat("num_%d.png", CostNum[0]);
+	CostSprite[0]->setTexture(filename[0]->getCString());
 
-			if (PlayerRect.intersectsRect(SubRect))
-			{
-				_playerlayer[i]->stopAllActions();
-			}
-			else
-			{
-
-			}
-		}
-	}
-
-	//敵どうしのあたり判定
-	for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
-	{
-		if (_enemylayer[i] == nullptr)break;
-		for (int n = 0; n < (sizeof(_enemylayer) / sizeof(_enemylayer[0])) - 1; n++)
-		{
-			if (_enemylayer[n] == nullptr || i == n)break;
-
-			EnemyRect = _enemylayer[i]->getBoundingBox();
-			SubRect = _enemylayer[n]->getBoundingBox();
-
-			if (EnemyRect.intersectsRect(SubRect))
-			{
-				_enemylayer[i]->stopAllActions();
-			}
-			else
-			{
-
-			}
-		}
-	}
-
-	//敵拠点のあたり判定
-	for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
-	{
-		if (_playerlayer[i] == nullptr)break;
-
-		PlayerRect = _playerlayer[i]->getBoundingBox();
-
-		if (PlayerRect.intersectsRect(E_HouseRect))
-		{
-			_playerlayer[i]->stopAllActions();
-			BaseBattle(0, i);
-		}
-		else
-		{
-
-		}
-	}
-
-	//味方拠点のあたり判定
-	for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
-	{
-		if (_enemylayer[i] == nullptr)break;
-
-		EnemyRect = _enemylayer[i]->getBoundingBox();
-
-		if (EnemyRect.intersectsRect(P_HouseRect))
-		{
-			_enemylayer[i]->stopAllActions();
-			BaseBattle(1, i);
-		}
-		else
-		{
-
-		}
-	}
-
-	
+	//総コスト表示10
+	CostNum[1] = ((P_TotalCost / 10));// - (P_TotalCost % 10));
+	log("%d", CostNum[1]);
+	filename[1] = String::createWithFormat("num_%d.png", CostNum[1]);
+	CostSprite[1]->setTexture(filename[1]->getCString());
 }
 
 
@@ -307,7 +358,7 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_enemylayer[E_Num]->setVisible(false);
 			_enemylayer[E_Num]->setPosition(0, 0);
 
-			P_AtackTime = 0;
+			P_AtackTime[E_Num] = 0;
 		}
 	}
 	else if (AttackDir == 1)
@@ -320,7 +371,7 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 			_playerlayer[P_Num]->setVisible(false);
 			_playerlayer[P_Num]->setPosition(0, 0);
 
-			E_AtackTime = 0;
+			E_AtackTime[P_Num] = 0;
 		}
 	}
 }
@@ -335,6 +386,7 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	if (BaseNum == 0)
 	{
 		HouseHP[BaseNum] -= P_AT[Num];
+		P_AtackTime[Num];
 
 		if (HouseHP[0] <= 0)
 		{
@@ -350,6 +402,7 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	else if (BaseNum == 1)
 	{
 		HouseHP[BaseNum] -= E_AT[Num];
+		E_AtackTime[Num] = 0;
 
 		if (HouseHP[1] <= 0)
 		{
@@ -504,6 +557,7 @@ void BattleLayer::PlayerSwipe(int DirectionS, int Num)
 }
 
 
+
 //----------------------------------------------------------------
 //魔法陣
 //----------------------------------------------------------------
@@ -541,4 +595,102 @@ void BattleLayer::Magic_Jin()
 
 	MagicLight->runAction(ActionBox::MagicLightAction());
 
+}
+
+
+
+//----------------------------------------------------------------
+//メニューボタン
+//----------------------------------------------------------------
+void BattleLayer::ButtonMenu(int Num)
+{
+	//早送り
+	if (Num == 0)
+	{
+		if (Doublespeedflag == false)
+		{
+			GameSpeed = 0.5f;//倍速
+
+			Doublespeedflag = true;
+		}
+		else
+		{
+			GameSpeed = 1.0f;//通常
+
+			Doublespeedflag = false;
+		}
+
+		//存在しているPlayerを倍速処理
+		for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+		{
+			if (_playerlayer[i] == nullptr)break;
+
+			_playerlayer[i]->ChangeSpeed(GameSpeed);
+		}
+		//存在しているEnemyを倍速処理
+		for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+		{
+			if (_enemylayer[i] == nullptr)break;
+
+			_enemylayer[i]->ChangeSpeed(GameSpeed);
+		}
+	}
+	//一時停止
+	else if (Num == 1)
+	{
+		//停止
+		if (Stopflag == false)
+		{
+			//存在しているPlayerをストップ
+			for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+			{
+				if (_playerlayer[i] == nullptr)break;
+
+				_playerlayer[i]->pauseSchedulerAndActions();
+			}
+			//存在しているEnemyをストップ
+			for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+			{
+				if (_enemylayer[i] == nullptr)break;
+
+				_enemylayer[i]->pauseSchedulerAndActions();
+			}
+
+			Stopflag = true;
+		}
+		//再生
+		else
+		{
+			//存在しているPlayerを再生
+			for (int i = 0; i < sizeof(_playerlayer) / sizeof(_playerlayer[0]); i++)
+			{
+				if (_playerlayer[i] == nullptr)break;
+
+				_playerlayer[i]->resumeSchedulerAndActions();
+			}
+			//存在しているEnemyを再生
+			for (int i = 0; i < sizeof(_enemylayer) / sizeof(_enemylayer[0]); i++)
+			{
+				if (_enemylayer[i] == nullptr)break;
+
+				_enemylayer[i]->resumeSchedulerAndActions();
+			}
+
+			Stopflag = false;
+		}
+	}
+	//最初から		できてない
+	else if (Num == 2)
+	{
+		VoidScene *_selectScene{ VoidScene::create() };
+		TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
+		Director::getInstance()->replaceScene(fade); 
+	}
+	//やめる
+	else if (Num == 3)
+	{
+		TitleScene *_selectScene{ TitleScene::create() };
+		TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
+		Director::getInstance()->replaceScene(fade);
+	}
 }

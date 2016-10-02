@@ -124,5 +124,5 @@ void SelectUISwipe::ButtonSwipeDOUW(int Num)
 //pullƒ{ƒ^ƒ“”»’è
 void SelectUISwipe::ButtonPull(int Num)
 {
-
+	_battlelayer->ButtonMenu(Num);
 }

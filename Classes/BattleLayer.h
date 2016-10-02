@@ -19,8 +19,8 @@ private:
 	virtual void onTouchEnded(Touch* pTouch, Event* pEvent);
 
 public:
-	EnemyLayer* _enemylayer[1000];
-	PlayerLayer* _playerlayer[1000]; 
+	EnemyLayer* _enemylayer[500];
+	PlayerLayer* _playerlayer[500]; 
 	MagicNode* _magicNode;
 
 	bool Displayflag;
@@ -28,9 +28,11 @@ public:
 	bool E_Atackflag;
 	bool Winflag;
 	bool SpriteTouchflag;
+	bool Doublespeedflag;
+	bool Stopflag;
 
-	float P_AtackTime;
-	float E_AtackTime;
+	float P_AtackTime[500];
+	float E_AtackTime[500];
 	float SpawnTimer;
 	float SwipeDirectionX;
 	float SwipeDirectionY;
@@ -45,15 +47,16 @@ public:
 	int TouchSpriteNum;
 	int EnemyCount;
 	int PlayerCount;
-	int E_HP[1000];
-	int E_AT[1000];
-	int E_COST[1000];
-	int E_PATTERN[1000];
-	int P_HP[1000];
-	int P_AT[1000];
-	int P_COST[1000];
+	int E_HP[500];
+	int E_AT[500];
+	int E_COST[500];
+	int E_PATTERN[500];
+	int P_HP[500];
+	int P_AT[500];
+	int P_COST[500];
 	int P_PATTERN[100];
 	int HouseHP[2];
+	int CostNum[2];
 
 	Rect EnemyRect;
 	Rect PlayerRect;
@@ -62,7 +65,9 @@ public:
 	Rect P_HouseRect;
 
 	Sprite* House[2];
+	Sprite* CostSprite[2];
 
+	String* filename[2];
 
 	bool init();
 	void update(float delta);
@@ -73,6 +78,7 @@ public:
 	void BaseBattle(int BaseNum, int Num);
 	void PlayerSwipe(int DirectionS ,int Num);
 	void Magic_Jin();
+	void ButtonMenu(int Num);
 	CREATE_FUNC(BattleLayer);
 };
 

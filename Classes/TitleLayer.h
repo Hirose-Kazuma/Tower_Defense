@@ -3,8 +3,6 @@
 
 #include "cocos2d.h"
 #include "MultiResolution.h"
-#include "SelectScene.h"
-#include "MainScene.h"
 
 USING_NS_CC;
 

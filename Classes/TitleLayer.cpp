@@ -1,4 +1,6 @@
 #include"TitleLayer.h"
+#include "MainScene.h"
+#include "SelectScene.h"
 
 USING_NS_CC;
 
