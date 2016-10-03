@@ -11,8 +11,8 @@ bool IwasiSprite::init()
 
 	countFlg = 0;
 
-	iwasi = Sprite::create("iwasi_1.png");
-	iwasi->setScale(0.8);
+	iwasi = Sprite::create("iwasi_3.png");
+	iwasi->setScale(0.6);
 	addChild(iwasi);
 
 	scheduleUpdate();
@@ -26,11 +26,11 @@ void IwasiSprite::update(float delta)
 
 	if (countFlg == 10)
 	{
-		iwasi->setTexture("iwasi_2.png");
+		iwasi->setTexture("iwasi_4.png");
 	}
 	else if (countFlg == 20)
 	{
-		iwasi->setTexture("iwasi_1.png");
+		iwasi->setTexture("iwasi_3.png");
 		countFlg = 0;
 	}
 }

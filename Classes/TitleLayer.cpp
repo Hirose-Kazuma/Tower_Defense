@@ -9,6 +9,10 @@ bool TitleLayer::init()
 		return false;
 	}
 
+	SimpleAudioEngine::sharedEngine()->setBackgroundMusicVolume(0.5);
+	SimpleAudioEngine::sharedEngine()->preloadBackgroundMusic("Go to the top.mp3");
+
+
 	Sprite *TitleLabel_T = Sprite::create("Label_T.png");
 	Sprite *TitleLabel_o = Sprite::create("Label_o.png");
 	Sprite *TitleLabel_u = Sprite::create("Label_u.png");
@@ -21,6 +25,7 @@ bool TitleLayer::init()
 	TitleLabel_u->setPosition(designResolutionSize.width*0.5, designResolutionSize.height*0.3);
 	TitleLabel_c->setPosition(designResolutionSize.width*0.5 + picSize, designResolutionSize.height*0.3);
 	TitleLabel_h->setPosition(designResolutionSize.width*0.5 + picSize * 2, designResolutionSize.height*0.3);
+
 
 	addChild(TitleLabel_T);
 	addChild(TitleLabel_o);
@@ -115,7 +120,25 @@ void TitleLayer::TouchMove(Touch *touch, Event *event)
 //タッチ終わり時
 void TitleLayer::TouchEnd(Touch *touch, Event *event)
 {
-	MainScene *_selectScene{ MainScene::create() };
-	TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
-	Director::getInstance()->replaceScene(fade);
+	//MainScene *_selectScene{ MainScene::create() };
+	//TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
+	//Director::getInstance()->replaceScene(fade);
+
+	//winテスト
+	//auto resultSprite = Sprite::create();
+	//addChild(resultSprite);
+	//ActionBox::ResultWin(resultSprite);
+
+	//Loseテスト
+	auto Lose1 = Sprite::create();
+	auto Lose2 = Sprite::create();
+	auto Lose3 = Sprite::create();
+	auto Lose4 = Sprite::create();
+
+	addChild(Lose1);
+	addChild(Lose2);
+	addChild(Lose3);
+	addChild(Lose4);
+
+	ActionBox::ResultLose(Lose1, Lose2, Lose3, Lose4);
 }
