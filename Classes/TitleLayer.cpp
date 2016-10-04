@@ -1,6 +1,7 @@
 #include"TitleLayer.h"
 #include "MainScene.h"
 #include "SelectScene.h"
+#include "MainScene.h"
 
 USING_NS_CC;
 
@@ -122,9 +123,9 @@ void TitleLayer::TouchMove(Touch *touch, Event *event)
 //タッチ終わり時
 void TitleLayer::TouchEnd(Touch *touch, Event *event)
 {
-	//MainScene *_selectScene{ MainScene::create() };
-	//TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
-	//Director::getInstance()->replaceScene(fade);
+	MainScene *_selectScene{ MainScene::create() };
+	TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
+	Director::getInstance()->replaceScene(fade);
 
 	//winテスト
 	//auto resultSprite = Sprite::create();

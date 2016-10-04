@@ -37,9 +37,11 @@ void TitleBackLayer::update(float delta)
 {
 	CountFlg++;
 
+	srand((unsigned int)time(NULL));
+
 	if (CountFlg == 60)
 	{
-		switch ((int)rand() % 20)
+		switch ((int)rand() % 5)
 		{
 		case 0:
 			IwasiCreate();

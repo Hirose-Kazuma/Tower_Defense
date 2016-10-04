@@ -52,15 +52,15 @@ bool BattleLayer::init()
 void BattleLayer::StartSprite()
 {
 	//“G‹’“_
-	House[0] = Sprite::create("house.png");
+	House[0] = Sprite::create("EnemyTower.png");
 	House[0]->setPosition(Vec2(designResolutionSize.width * 1.5, designResolutionSize.height * 0.6));
 	House[0]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	E_HouseRect = House[0]->getBoundingBox();
 	addChild(House[0]);
 
 	//Ž©‹’“_
-	House[1] = Sprite::create("house.png");
-	House[1]->setPosition(Vec2(designResolutionSize.width * -0.5, designResolutionSize.height * 0.6));
+	House[1] = Sprite::create("PlayerTower.png");
+	House[1]->setPosition(Vec2(designResolutionSize.width * 0, designResolutionSize.height * 0.6));
 	House[1]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	P_HouseRect = House[1]->getBoundingBox();
 	addChild(House[1]);
@@ -100,6 +100,9 @@ void BattleLayer::update(float delta)
 				//“–‚½‚Á‚Ä‚¢‚é‚Æ‚«
 				if (EnemyRect.intersectsRect(PlayerRect))
 				{
+					_playerlayer[n]->stopAllActions();
+					_enemylayer[i]->stopAllActions();
+
 					/*_enemylayer[i]->Moveflag = true;
 					_playerlayer[n]->Moveflag = true;*/
 
@@ -109,8 +112,6 @@ void BattleLayer::update(float delta)
 					//PlayerUŒ‚
 					if (P_Atackflag == false)
 					{
-						_playerlayer[n]->stopAllActions();
-
 						CharBattle(0, i, n);
 
 						P_Atackflag = true;
@@ -126,8 +127,6 @@ void BattleLayer::update(float delta)
 					//EnemyUŒ‚
 					if (E_Atackflag == false)
 					{
-						_enemylayer[i]->stopAllActions();
-
 						E_Atackflag = true;
 
 						CharBattle(1, i, n);
@@ -273,7 +272,7 @@ void BattleLayer::EnemyDisplay()
 	int EnemyLine = rand() % 3;
 
 	_enemylayer[EnemyCount] = EnemyLayer::create();
-	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * (0.4 + EnemyLine * 0.1)));
+	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 1.3, designResolutionSize.height * (0.4 + EnemyLine * 0.1)));
 	_enemylayer[EnemyCount]->ChangeSpeed(GameSpeed);
 
 	if (EnemyNum == 0)_enemylayer[EnemyCount]->SetStatus0();
@@ -478,7 +477,7 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 	Vec2 layerpos = this->getPosition();
 	if (SpriteTouchflag == false)
 	{
-		if (layerpos.x + swipe.x <= designResolutionSize.width * 0.5
+		if (layerpos.x + swipe.x <= designResolutionSize.width * 0
 			&& layerpos.x + swipe.x >= designResolutionSize.width * -0.5)
 		{
 			PointRepairX += swipe.x;
