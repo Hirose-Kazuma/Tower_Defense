@@ -21,10 +21,12 @@ private:
 
 public:
 	Sprite* EnemyPic;
+	Vec2 NowPos;
 
 	float Timer;
 	float GameSpeed;
 	bool Flipflag;
+	bool Moveflag;
 	int countFlg;
 	int MoveDirection;
 
@@ -33,6 +35,7 @@ public:
 	int HP;
 	int AT;
 	int COST;
+	int SOUND;
 
 
 	bool init();

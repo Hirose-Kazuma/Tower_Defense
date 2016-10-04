@@ -10,6 +10,8 @@ class VoidScene :public Scene
 public:
 	float Timer;
 
+
+	static cocos2d::Scene* createScene();
 	bool init();
 	void update(float delta);
 	void onEnterTransitionDidFinish();

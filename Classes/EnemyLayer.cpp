@@ -8,7 +8,6 @@ bool EnemyLayer::init()
 		return false;
 	}
 
-	Timer = 0;
 	MoveDirection = -1;
 
 	//–ˆƒtƒŒ[ƒ€ˆ—
@@ -28,11 +27,16 @@ void EnemyLayer::update(float delta)
 	if (Timer >= (1.0f * GameSpeed)) 
 	{
 		auto move1 = MoveBy::create((1 * GameSpeed), Vec2(MoveDirection * 64, 0));	//Œ»ÝˆÊ’u‚©‚çˆÚ“®
-
 		this->runAction(move1);
-
 		Timer = 0;
 	}
+
+	/*NowPos = this->getPosition();
+
+	if (Moveflag == false)
+	{
+		this->setPosition(Vec2(NowPos.x + ((1 * GameSpeed) * MoveDirection), NowPos.y));
+	}*/
 }
 
 void EnemyLayer::PicDisplay()
@@ -84,6 +88,7 @@ void EnemyLayer::SetStatus2()
 void EnemyLayer::SetStatus3()
 {
 	this->initWithFile("Enemy.png");
+	this->setScale(0.2);
 
 	AnimationPattern = 0;
 	AtackPattern = 1;
@@ -95,6 +100,7 @@ void EnemyLayer::SetStatus3()
 void EnemyLayer::SetStatus4()
 {
 	this->initWithFile("Enemy.png");
+	this->setScale(0.2);
 
 	AnimationPattern = 0;
 	AtackPattern = 1;
@@ -106,6 +112,7 @@ void EnemyLayer::SetStatus4()
 void EnemyLayer::SetStatus5()
 {
 	this->initWithFile("Enemy.png");
+	this->setScale(0.2);
 
 	AnimationPattern = 0;
 	AtackPattern = 1;

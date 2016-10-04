@@ -18,6 +18,7 @@ public:
 	BattleLayer* _battlelayer;
 
 	Sprite* Button[6];
+	Sprite* CostSprite[2];
 
 	Size PicSize;
 
@@ -25,8 +26,12 @@ public:
 
 	int ButtonNum;
 	int ButtonType;
+	int CostNum[2];
+
+	String* filename[2];
 
 	bool init();
+	void update(float delta);
 	void ButtonDisplay();
 	void ButtonTap(int Num);
 	void ButtonSwipeUP(int Num);

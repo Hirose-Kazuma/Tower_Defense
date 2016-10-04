@@ -23,6 +23,9 @@ bool SelectUISwipe::init()
 	_battlelayer = BattleLayer::create();
 	addChild(_battlelayer, -1);
 
+	//毎フレーム処理
+	this->scheduleUpdate();
+
 	ButtonDisplay();
 
 	return true;
@@ -50,7 +53,38 @@ void SelectUISwipe::ButtonDisplay()
 			designResolutionSize.height * 0.18));
 		this->addChild(Button[i], 1);
 	}
+
+
+
+	//コスト表示01
+	CostSprite[0] = Sprite::create("num_0.png");
+	CostSprite[0]->setPosition(Vec2(designResolutionSize.width * 0.95, designResolutionSize.height * 0.1));
+	addChild(CostSprite[0]);
+
+	//コスト表示10
+	CostSprite[1] = Sprite::create("num_0.png");
+	CostSprite[1]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.1));
+	addChild(CostSprite[1]);
 }
+
+
+//----------------------------------------------------------------
+//毎フレーム処理
+//----------------------------------------------------------------
+void SelectUISwipe::update(float delta)
+{
+	//総コスト表示01
+	CostNum[0] = _battlelayer->P_TotalCost % 10;
+	filename[0] = String::createWithFormat("num_%d.png", CostNum[0]);
+	CostSprite[0]->setTexture(filename[0]->getCString());
+
+	//総コスト表示10
+	CostNum[1] = _battlelayer->P_TotalCost / 10;
+	filename[1] = String::createWithFormat("num_%d.png", CostNum[1]);
+	CostSprite[1]->setTexture(filename[1]->getCString());
+}
+
+
 
 //タッチ開始
 bool SelectUISwipe::onTouchBegan(Touch* pTouch, Event* pEvent)

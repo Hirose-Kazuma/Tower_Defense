@@ -2,6 +2,13 @@
 #include "VoidScene.h"
 #include "TitleScene.h"
 
+/*
+attackの設計見直し
+->攻撃時にactionをストップしないように
+*/
+
+
+
 bool BattleLayer::init()
 {
 	if (!Layer::init())
@@ -10,8 +17,8 @@ bool BattleLayer::init()
 	}
 
 	GameSpeed = 1.0f;//等倍
-	HouseHP[0] = 3;
-	HouseHP[1] = 3;
+	HouseHP[0] = 5;
+	HouseHP[1] = 5;
 	P_TotalCost = 99;
 	E_TotalCost = 5;
 
@@ -46,25 +53,17 @@ void BattleLayer::StartSprite()
 {
 	//敵拠点
 	House[0] = Sprite::create("house.png");
-	House[0]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.6));
+	House[0]->setPosition(Vec2(designResolutionSize.width * 1.5, designResolutionSize.height * 0.6));
+	House[0]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	E_HouseRect = House[0]->getBoundingBox();
 	addChild(House[0]);
 
 	//自拠点
 	House[1] = Sprite::create("house.png");
-	House[1]->setPosition(Vec2(designResolutionSize.width * 0.1, designResolutionSize.height * 0.6));
+	House[1]->setPosition(Vec2(designResolutionSize.width * -0.5, designResolutionSize.height * 0.6));
+	House[1]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	P_HouseRect = House[1]->getBoundingBox();
 	addChild(House[1]);
-
-	//コスト表示01
-	CostSprite[0] = Sprite::create("num_0.png");
-	CostSprite[0]->setPosition(Vec2(designResolutionSize.width * 0.95, designResolutionSize.height * 0.1));
-	addChild(CostSprite[0]);
-
-	//コスト表示10
-	CostSprite[1] = Sprite::create("num_0.png");
-	CostSprite[1]->setPosition(Vec2(designResolutionSize.width * 0.9, designResolutionSize.height * 0.1));
-	addChild(CostSprite[1]);
 }
 
 
@@ -101,23 +100,25 @@ void BattleLayer::update(float delta)
 				//当たっているとき
 				if (EnemyRect.intersectsRect(PlayerRect))
 				{
-					_enemylayer[i]->stopAllActions();
-					_playerlayer[n]->stopAllActions();
+					/*_enemylayer[i]->Moveflag = true;
+					_playerlayer[n]->Moveflag = true;*/
 
-					P_AtackTime[i] += delta;
-					E_AtackTime[n] += delta;
+					P_AtackTime[n] += delta;
+					E_AtackTime[i] += delta;
 
 					//Player攻撃
 					if (P_Atackflag == false)
 					{
+						_playerlayer[n]->stopAllActions();
+
 						CharBattle(0, i, n);
 
 						P_Atackflag = true;
 					}
 					//Player攻撃ディレイ
-					else if (P_AtackTime[i] >= (3.0 * GameSpeed))
+					else if (P_AtackTime[n] >= (3.0 * GameSpeed))
 					{
-						P_AtackTime[i] = 0;
+						P_AtackTime[n] = 0;
 						P_Atackflag = false;
 					}
 
@@ -125,21 +126,25 @@ void BattleLayer::update(float delta)
 					//Enemy攻撃
 					if (E_Atackflag == false)
 					{
-						CharBattle(1, n, i);
+						_enemylayer[i]->stopAllActions();
 
 						E_Atackflag = true;
+
+						CharBattle(1, i, n);
 					}
 					//Player攻撃ディレイ
-					else if (E_AtackTime[n] >= (3.0 * GameSpeed))
+					else if (E_AtackTime[i] >= (3.0 * GameSpeed))
 					{
-						E_AtackTime[n] = 0;
+						E_AtackTime[i] = 0;
 						E_Atackflag = false;
 					}
 				}
 				//進軍
 				else
 				{
-
+					/*_enemylayer[i]->Moveflag = false;
+					_playerlayer[n]->Moveflag = false;
+					log("%d %d", n, _playerlayer[n]->Moveflag);*/
 				}
 			}
 		}
@@ -158,10 +163,11 @@ void BattleLayer::update(float delta)
 				if (PlayerRect.intersectsRect(SubRect))
 				{
 					_playerlayer[i]->stopAllActions();
+					//_playerlayer[i]->Moveflag = true;
 				}
 				else
 				{
-
+					//_playerlayer[i]->Moveflag = false;
 				}
 			}
 		}
@@ -180,6 +186,7 @@ void BattleLayer::update(float delta)
 				if (EnemyRect.intersectsRect(SubRect))
 				{
 					_enemylayer[i]->stopAllActions();
+					//_enemylayer[i]->Moveflag = true;
 				}
 				else
 				{
@@ -200,7 +207,7 @@ void BattleLayer::update(float delta)
 				P_AtackTime[i] += delta;
 
 				_playerlayer[i]->stopAllActions();
-				
+				//_playerlayer[i]->Moveflag = true;
 
 				//Player攻撃
 				if (P_Atackflag == false)
@@ -249,18 +256,6 @@ void BattleLayer::update(float delta)
 			}
 		}
 	}
-
-
-	//総コスト表示01
-	CostNum[0] = P_TotalCost % 10;
-	filename[0] = String::createWithFormat("num_%d.png", CostNum[0]);
-	CostSprite[0]->setTexture(filename[0]->getCString());
-
-	//総コスト表示10
-	CostNum[1] = ((P_TotalCost / 10));// - (P_TotalCost % 10));
-	log("%d", CostNum[1]);
-	filename[1] = String::createWithFormat("num_%d.png", CostNum[1]);
-	CostSprite[1]->setTexture(filename[1]->getCString());
 }
 
 
@@ -270,17 +265,23 @@ void BattleLayer::update(float delta)
 //----------------------------------------------------------------
 void BattleLayer::EnemyDisplay()
 {
+	//enemy乱数
+	srand((unsigned int)time(NULL));
+	int EnemyNum = rand() % 6;
+
+	//列乱数
+	int EnemyLine = rand() % 3;
+
 	_enemylayer[EnemyCount] = EnemyLayer::create();
-	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * 0.5));
-	_enemylayer[EnemyCount]->SetStatus2();
+	_enemylayer[EnemyCount]->setPosition(Vec2(designResolutionSize.width * 0.8, designResolutionSize.height * (0.4 + EnemyLine * 0.1)));
 	_enemylayer[EnemyCount]->ChangeSpeed(GameSpeed);
 
-	/*if (CharNum == 0)_enemylayer[EnemyCount]->SetStatus0();
-	else if (CharNum == 1)_enemylayer[EnemyCount]->SetStatus1();
-	else if (CharNum == 2)_enemylayer[EnemyCount]->SetStatus2();
-	else if (CharNum == 3)_enemylayer[EnemyCount]->SetStatus3();
-	else if (CharNum == 4)_enemylayer[EnemyCount]->SetStatus4();
-	else if (CharNum == 5)_enemylayer[EnemyCount]->SetStatus5();*/
+	if (EnemyNum == 0)_enemylayer[EnemyCount]->SetStatus0();
+	else if (EnemyNum == 1)_enemylayer[EnemyCount]->SetStatus1();
+	else if (EnemyNum == 2)_enemylayer[EnemyCount]->SetStatus2();
+	else if (EnemyNum == 3)_enemylayer[EnemyCount]->SetStatus3();
+	else if (EnemyNum == 4)_enemylayer[EnemyCount]->SetStatus4();
+	else if (EnemyNum == 5)_enemylayer[EnemyCount]->SetStatus5();
 
 	E_PATTERN[EnemyCount] = _enemylayer[EnemyCount]->AtackPattern;
 	E_AT[EnemyCount] = _enemylayer[EnemyCount]->AT;
@@ -350,26 +351,34 @@ void BattleLayer::CharBattle(int AttackDir, int E_Num, int P_Num)
 {
 	if (AttackDir == 0) 
 	{
+		auto jump = JumpBy::create(1, Vec2(0, 0), 25, 1);
+		//_playerlayer[P_Num]->runAction(jump);
 		E_HP[E_Num] -= P_AT[P_Num];
+
+		//se再生
+		_playerlayer[P_Num]->SoundPlaye();
 
 		//要改善 死亡処理
 		if (E_HP[E_Num] <= 0)
 		{
 			_enemylayer[E_Num]->setVisible(false);
-			_enemylayer[E_Num]->setPosition(0, 0);
+			_enemylayer[E_Num]->setPosition(100000, 1000000);
 
 			P_AtackTime[E_Num] = 0;
+
+			P_TotalCost += 1;
 		}
 	}
 	else if (AttackDir == 1)
 	{
 		P_HP[P_Num] -= E_AT[E_Num];
-
+		log(" one %d", P_Num);
 		//死亡処理
 		if (P_HP[P_Num] <= 0)
 		{
+			log(" twe %d", P_Num);
 			_playerlayer[P_Num]->setVisible(false);
-			_playerlayer[P_Num]->setPosition(0, 0);
+			_playerlayer[P_Num]->setPosition(-100000, -1000000);
 
 			E_AtackTime[P_Num] = 0;
 		}
@@ -386,12 +395,16 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 	if (BaseNum == 0)
 	{
 		HouseHP[BaseNum] -= P_AT[Num];
-		P_AtackTime[Num];
+		P_AtackTime[Num] = 0;
+		log("BASEATTACK!");
+
+		_playerlayer[Num]->SoundPlaye();
 
 		if (HouseHP[0] <= 0)
 		{
 			if (Winflag == false)
 			{
+				E_HouseRect = Rect(0, 0, 0, 0);
 				House[0]->removeFromParentAndCleanup(true);
 				Winflag = true;
 			}
@@ -408,6 +421,7 @@ void BattleLayer::BaseBattle(int BaseNum, int Num)
 		{
 			if (Winflag == false)
 			{
+				P_HouseRect = Rect(0, 0, 0, 0);
 				House[1]->removeFromParentAndCleanup(true);
 				Winflag = true;
 			}
@@ -461,16 +475,15 @@ void BattleLayer::onTouchMoved(Touch* pTouch, Event* pEvent)
 	Vec2 swipe = pTouch->getDelta();
 
 	//Spriteがタッチされていないとき
+	Vec2 layerpos = this->getPosition();
 	if (SpriteTouchflag == false)
 	{
-		PointRepairX += swipe.x;
-	}
-
-	Vec2 layerpos = this->getPosition();
-
-	if (SpriteTouchflag != true)
-	{
-		this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
+		if (layerpos.x + swipe.x <= designResolutionSize.width * 0.5
+			&& layerpos.x + swipe.x >= designResolutionSize.width * -0.5)
+		{
+			PointRepairX += swipe.x;
+			this->setPosition(Vec2(layerpos.x + swipe.x, layerpos.y));
+		}
 	}
 }
 

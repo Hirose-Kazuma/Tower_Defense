@@ -56,7 +56,6 @@ public:
 	int P_COST[500];
 	int P_PATTERN[100];
 	int HouseHP[2];
-	int CostNum[2];
 
 	Rect EnemyRect;
 	Rect PlayerRect;
@@ -65,9 +64,6 @@ public:
 	Rect P_HouseRect;
 
 	Sprite* House[2];
-	Sprite* CostSprite[2];
-
-	String* filename[2];
 
 	bool init();
 	void update(float delta);

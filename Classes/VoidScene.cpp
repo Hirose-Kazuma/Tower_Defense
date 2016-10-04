@@ -2,6 +2,18 @@
 #include "MainScene.h"
 
 
+Scene* VoidScene::createScene()
+{
+	auto scene = Scene::create();
+
+	auto layer = VoidScene::create();
+
+	scene->addChild(layer);
+
+	return scene;
+}
+
+
 //‚·‚®Œ³‚ÌƒV[ƒ“‚É–ß‚·
 bool VoidScene::init()
 {
@@ -26,6 +38,8 @@ void VoidScene::update(float delta)
 
 void VoidScene::onEnterTransitionDidFinish()
 {
+	log("WWWW");
+
 	MainScene *_selectScene{ MainScene::create() };
 	TransitionFade *fade = TransitionFade::create(1.0f, _selectScene);
 	Director::getInstance()->replaceScene(_selectScene);
