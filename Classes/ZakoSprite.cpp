@@ -12,7 +12,7 @@ bool ZakoSprite::init()
 	countFlg = 0;
 
 	zako = Sprite::create("zako_1.png");
-	zako->setScale(0.8);
+	zako->setScale(0.6);
 	addChild(zako);
 
 	scheduleUpdate();

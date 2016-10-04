@@ -3,6 +3,12 @@
 
 #include "cocos2d.h"
 #include "MultiResolution.h"
+#include "SelectScene.h"
+#include "MainScene.h"
+#include "ActionBox.h"
+
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 
 USING_NS_CC;
 
